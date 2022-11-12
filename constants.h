@@ -5,19 +5,19 @@
 // """0 equals to 0 and 1 to 1 =>  00101 is 8 of DIAMONDS and 11100 is Ace of CLUBS"""
 // """First 3 digits represent the value and the last 2 represent the color"""
 
-enum TEAMS
-{
-    TEAM_1 = 0b00,
-    TEAM_2 = 0b01,
-    TEAM_1 = 0b10,
-    TEAM_2 = 0b11
-};
+// enum TEAMS
+// {
+//     TEAM_1 = 0b00,
+//     TEAM_2 = 0b01,
+//     TEAM_1 = 0b10,
+//     TEAM_2 = 0b11
+// };
 
 enum COLORS_TO_BYTES{
     CLUBS = 0b00,
     DIAMONDS = 0b01,
     HEARTS = 0b10,
-    SPADES = 0b11,
+    SPADES = 0b11
 };
 
 
@@ -37,7 +37,7 @@ const size_t NUMBER_OF_DEALS = 8;
 const size_t NUMBER_OF_PLAYERS = 4;
 const size_t NUMBER_OF_CARDS = 32;
 
-std::vector <unsigned char> ALL_TRUMP_POINTS =
+static const std::vector <unsigned char> ALL_TRUMP_POINTS =
 {
     0,  // seven 
     0, // eight
@@ -49,7 +49,7 @@ std::vector <unsigned char> ALL_TRUMP_POINTS =
     11  // Ace
 };
 
-std::vector <unsigned char> NO_TRUMP_POINTS =
+static const std::vector <unsigned char> NO_TRUMP_POINTS =
 {
     0,  // seven 
     0, // eight
