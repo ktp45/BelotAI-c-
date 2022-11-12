@@ -89,7 +89,6 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const vector<vector<Card>
     {
         vector<vector<Card>> newHands = all_hands;
         newHands.at(current_player).erase(newHands.at(current_player).begin() + m_helper.findCard(newHands.at(current_player), posibleOptions.at(i)));
-        remove(newHands.at(current_player).begin(),newHands.at(current_player).end(), posibleOptions.at(i));
         vector<Card> newPlayed_cards = played_cards;
         newPlayed_cards.push_back(posibleOptions.at(i));
         play_recursive((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1); // play the next card
