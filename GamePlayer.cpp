@@ -2,7 +2,7 @@
 
 GamePlayer::GamePlayer()
 {
-  cerr << "Empty hands";
+    cerr << "Empty hands";
 }
 
 
@@ -12,6 +12,7 @@ GamePlayer::GamePlayer(vector<Card> hand1, vector<Card> hand2, vector<Card> hand
     m_vCards.push_back(hand2);
     m_vCards.push_back(hand3);
     m_vCards.push_back(hand4);
+    playedCombinations = 0;
     
     unsigned char colorTrump = 69;
     if(announce == "CLUBS")
@@ -87,6 +88,7 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const vector<vector<Card>
     for (int i = 0; i < posibleOptionsCount; i++ )
     {
         vector<vector<Card>> newHands = all_hands;
+        newHands.at(current_player).erase(newHands.at(current_player).begin() + m_helper.findCard(newHands.at(current_player), posibleOptions.at(i)));
         remove(newHands.at(current_player).begin(),newHands.at(current_player).end(), posibleOptions.at(i));
         vector<Card> newPlayed_cards = played_cards;
         newPlayed_cards.push_back(posibleOptions.at(i));
@@ -129,11 +131,11 @@ void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
     auto start = chrono::steady_clock::now();
     play_deals_fast(cardsNumber);
     long long FirstDealsCount = GetFirstDealsCount();
-    cout << "Played Deals with "<< (int)cardsNumber << " : " << GetFirstDealsCount() << endl;
+    cout << "Played Deals with "<< (int)cardsNumber << " : " << FirstDealsCount << endl;
 
     for(long long deal_id = 0 ; deal_id < FirstDealsCount; deal_id++)
     {
-        play_deals_fast(0, NUMBER_OF_DEALS - cardsNumber, deal_id);
+        play_deals_fast(0, NUMBER_OF_DEALS - cardsNumber, -1);
         long long SecondDealsCount = GetSecondDealsCount();
         auto time_write = chrono::steady_clock::now();
         for(long long i = 0; i < SecondDealsCount; i++)
@@ -167,6 +169,11 @@ long long GamePlayer::GetSecondDealsCount()
 /* final results */
 bool GamePlayer::return_when_all_cards_played()
 {
+    playedCombinations ++;
+    if (playedCombinations % 5000000 == 0 )
+    {
+        cout << playedCombinations << endl;
+    }
     return true;
 }
 

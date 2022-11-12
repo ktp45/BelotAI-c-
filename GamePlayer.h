@@ -9,6 +9,7 @@ vector<vector<vector<Card>>> played_deals;
 vector<vector<vector<Card>>> remaining_cards;
 vector<vector<Card>> m_vCards;
 string announce;
+long long playedCombinations;
 public:
 /*default const */
 GamePlayer();
