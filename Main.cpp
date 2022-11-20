@@ -16,7 +16,9 @@ int main()
     std::vector<Card> hand2(deck.begin() + NUMBER_OF_DEALS, deck.begin() + 2 * NUMBER_OF_DEALS);
     std::vector<Card> hand3(deck.begin() + 2 * NUMBER_OF_DEALS, deck.begin() + 3 * NUMBER_OF_DEALS);
     std::vector<Card> hand4(deck.begin() + 3 * NUMBER_OF_DEALS, deck.end());
+ 
     GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS") ;
+    AI.PrintHands();
     AI.StartProcessing();
     return 0;
 }

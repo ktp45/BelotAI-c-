@@ -29,9 +29,9 @@ unsigned char Card::GetColor()const
     return m_ucColor;
 }
 
-std::ostream& operator<<(ostream &out,const Card& c) //the cards is printed as (' name and color')
+std::ostream& operator<<(ostream &out, const Card& c) //the cards is printed as (' name and color')
 {
-	out << "(" << static_cast<int>(c.GetColor()) << ")";
+	out << "(" << static_cast<int>(c.GetPower()) << ")" << "(" << static_cast<int>(c.GetColor()) << ")";
     return out;
 }
 

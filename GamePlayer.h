@@ -35,5 +35,7 @@ long long GetSecondDealsCount();
 /* final results */
 bool return_when_all_cards_played();
 
+void PrintHands();
+
 bool StartProcessing();
 };

@@ -15,8 +15,12 @@ class Card
     Card& operator= (const Card&);
 
     bool operator==(const Card& right);
+
     /*get name*/
     unsigned char GetPower()const;
     /*get color*/
     unsigned char GetColor()const;
 };
+
+
+std::ostream& operator<<(ostream &out,const Card& c);

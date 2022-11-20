@@ -42,7 +42,27 @@ GamePlayer::GamePlayer(vector<Card> hand1, vector<Card> hand2, vector<Card> hand
 
 void GamePlayer::sort_hands()
 {
-
+    int i, j;
+    for(int hand = 0;  hand < m_vCards.size(); hand++)
+    {
+        vector<Card> arr = m_vCards.at(hand);
+        for (i = 1; i < arr.size(); i++)
+        {
+            Card key = arr.at(i);
+            j = i - 1;
+    
+            // Move elements of arr[0..i-1], 
+            // that are greater than key, to one
+            // position ahead of their
+            // current position
+            while (j >= 0 && m_helper.compare_cards(arr[j], key))
+            {
+                arr.at(j + 1) = arr.at(j);
+                j = j - 1;
+            }
+            arr.at(j + 1) = key;
+        }
+    } 
 }
 /* brute force play combinations */
 bool GamePlayer::play_recursive(unsigned char turn_id, const vector<vector<Card>>& all_hands, vector<Card>& played_cards, 
@@ -174,6 +194,18 @@ bool GamePlayer::return_when_all_cards_played()
         cout << playedCombinations << endl;
     }
     return true;
+}
+
+void GamePlayer::PrintHands()
+{
+    for (int i = 0; i < m_vCards.size(); i++)
+    {
+        for (int j = 0; j < m_vCards.at(i).size(); j++)
+        {
+            cout << m_vCards.at(i).at(j) << " ";
+        }
+        cout << endl;
+    }
 }
 
 bool GamePlayer::StartProcessing()

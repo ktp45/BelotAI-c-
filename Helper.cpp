@@ -12,7 +12,7 @@ bool Helper::InitHelper(unsigned char color)
     return true;
 };
 
-
+/* first compare color than power */
 bool Helper::compare_cards(Card card1, Card card2)
 {
     if (card1.GetColor() > card2.GetColor())
