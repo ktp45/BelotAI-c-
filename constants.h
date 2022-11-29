@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <array>
+#include "Card.h"
 // """0 equals to 0 and 1 to 1 =>  00101 is 8 of DIAMONDS and 11100 is Ace of CLUBS"""
 // """First 3 digits represent the value and the last 2 represent the color"""
 
@@ -33,9 +35,19 @@ enum CARD_VALUE_TO_BYTES{
 };
 
 
+
+const size_t ERROR = 69; 
+const size_t HAND_SIZE = 8;
 const size_t NUMBER_OF_DEALS = 8;
 const size_t NUMBER_OF_PLAYERS = 4;
 const size_t NUMBER_OF_CARDS = 32;
+
+static const Card NULLCARD(ERROR, ERROR);
+static const std::array<Card, HAND_SIZE> NULLHAND{NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD};
+
+const size_t EXPECTED_FIRST_DEAL_COMBINATIONS     = 5000000;
+const size_t EXPECTED_SECOND_DEAL_COMBINATIONS    = 5000000;
+const size_t EXPECTED_SAVED_DEAL_COMBINATIONS    = 25000000;
 
 static const std::vector <unsigned char> ALL_TRUMP_POINTS =
 {

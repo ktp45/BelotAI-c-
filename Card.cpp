@@ -5,7 +5,8 @@ using namespace std;
 
 Card::Card()
 {
-    cerr<<"WRONG CARD CONSTRUCT";
+    m_ucColor = 69;
+    m_ucPower = 69;
 }
 
     /* Copy const*/

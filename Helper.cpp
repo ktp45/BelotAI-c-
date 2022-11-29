@@ -3,7 +3,7 @@ using namespace std;
 
 Helper::Helper()
 {
-    color_trump = 69;
+    color_trump = ERROR;
 };
 
 bool Helper::InitHelper(unsigned char color)
@@ -26,31 +26,31 @@ bool Helper::compare_cards(Card card1, Card card2)
     return false;
 };
 
-unsigned char Helper::findCard(vector<Card> hand, Card card)
+unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card)
 {
     if(card.GetColor() == HEARTS || card.GetColor() == SPADES)
     {
-        for(int i = hand.size() - 1; i >= 0 ; i--)
+        for(int i = HAND_SIZE - 1; i >= 0 ; i--)
         {
             if(hand.at(i) == card)
-                {
-                    return i;
-                }
+            {
+                return i;
+            }
         }
     }
     else
     {
-        unsigned char size = hand.size();
-        for(int i = 0; i < size ;i++)
+        for(int i = 0; i < HAND_SIZE ;i++)
         {
             if(hand.at(i) == card)
-                {
-                    return i;
-                }
+            {
+                return i;
+            }
         }
     }
 
-    return 69;
+    cerr << "Cannot FIND CARD" << endl;
+    return ERROR;
 }
 
 bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
@@ -58,6 +58,16 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
     if(announce.empty())
     {
         cerr << "NO ANNOUNCE" << endl;
+    }
+        // any card is bigger than the nullcard
+    if(card1.GetColor() == NULLCARD.GetColor())
+    {
+        return true;
+    }
+
+    if(card2.GetColor() == NULLCARD.GetColor())
+    {           
+        return false;
     }
 
     unsigned char points_first = ALL_TRUMP_POINTS.at(card1.GetPower());
@@ -79,10 +89,9 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
     return false;
 }
 
-bool Helper::search_by_color(const vector<Card>& hand, unsigned char color)
+bool Helper::search_by_color(const array<Card, HAND_SIZE>& hand, unsigned char color)
 {
-    int size = hand.size();
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < HAND_SIZE; i++)
     {
         if (hand.at(i).GetColor() == color)
         {
@@ -92,39 +101,50 @@ bool Helper::search_by_color(const vector<Card>& hand, unsigned char color)
     return false;
 }
 
-vector<Card>  Helper::playable_by_hand_and_played_cards
-(const string& announce,const vector<Card>& hand, const vector<Card>& playedCards)
+array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
+(const string& announce,const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
 {
+    unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
+
     if (announce.empty())
     {
         cerr << "NO ANNOUNCE" << endl;
     }
 
-    if (playedCards.empty())
+    if (playedCards.at(0).GetColor() == NULLCARD.GetColor() && playedCards.at(0).GetPower() == NULLCARD.GetPower())
     {
         return hand;
     }
-
-    vector<Card> possible_options;
+ 
+    array <Card, HAND_SIZE> possible_options;
 
     if (announce == "ALL_TRUMP")
     {
+
         if(!search_by_color(hand, playedCards.at(0).GetColor()))
         {
             return hand;
         }
-        unsigned char hand_size = hand.size();
-        for (int i = 0; i < hand_size; i++)
+
+        for (int i = 0; i < HAND_SIZE; i++)
         {
             if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.back(), announce))
             {
-                possible_options.push_back(hand.at(i));
+                possible_options.at(optionsCount) = (hand.at(i));
+                optionsCount++;
             }
         }
 
-        if(possible_options.empty())
+        if(optionsCount == 0)
         {
             return hand;
+        }
+        else
+        {
+            for (int i = optionsCount; i < HAND_SIZE; i++)
+            {
+                possible_options.at(i) = NULLCARD;//filling with empty options
+            }
         }
         return possible_options;
     }
@@ -134,33 +154,40 @@ vector<Card>  Helper::playable_by_hand_and_played_cards
         {
             return hand;
         }
-        unsigned char hand_size = hand.size();
-        for (int i = 0; i < hand_size; i++)
+
+        for (int i = 0; i < HAND_SIZE; i++)
         {
             if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
             {
-                possible_options.push_back(hand.at(i));
+                possible_options.at(optionsCount) = (hand.at(i));
+                optionsCount++;
             }
         }
 
-        if(possible_options.empty())
+        if(optionsCount == 0)
         {
             return hand;
         }
+        else
+        {
+            for (int i = optionsCount; i < HAND_SIZE; i++)
+            {
+                possible_options.at(i) = NULLCARD;//filling with empty options
+            }
+        }        
         return possible_options;
     }
     if (announce == "TRUMP")
     {
-        if(color_trump == 69)
+        if(color_trump == ERROR)
         {
             cerr << "NO TRUMP COLOR!" << endl;
         }
 
         if (!search_by_color(hand, playedCards.at(0).GetColor())) // if you dont have card with same color of first one
         {
-            Card last_trump(0,69);
-            unsigned char playedCardsSize = playedCards.size();
-            for (int i = 0; i < playedCardsSize; i++)
+            Card last_trump(0,ERROR);
+            for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
             {
                 if(playedCards.at(i).GetColor() == color_trump && playedCards.at(i).GetPower() >= last_trump.GetPower())
                 {
@@ -169,37 +196,42 @@ vector<Card>  Helper::playable_by_hand_and_played_cards
             }
 
             bool teammate_trump = false;
-            if(playedCards.size() > 2)
+            if(playedCardsSize > 2)
             {
                 if(last_trump.GetPower() != playedCards.at(playedCardsSize - 2).GetPower())
                 {
                     teammate_trump = true;
                 }
             }
-            if(last_trump.GetColor() != 69 && !teammate_trump) 
+            if(last_trump.GetColor() != ERROR && !teammate_trump) 
             {   
-                unsigned char hand_size = hand.size(); // if someone used trump and u have highter u must use it unless it's your teammate
-                for(int i = 0; i < hand_size; i++)
+                     // if someone used trump and u have highter u must use it unless it's your teammate
+                for(int i = 0; i < HAND_SIZE; i++)
                 {
                     if (hand.at(i).GetColor() == color_trump && hand.at(i).GetPower() > last_trump.GetPower())
                     {
-                        possible_options.push_back(hand.at(i));
+                        possible_options.at(optionsCount) = (hand.at(i));
+                        optionsCount++;
                     }
                 }
             }
-            else if(last_trump.GetColor() == 69)
+            else if(last_trump.GetColor() == ERROR)
             {
-                unsigned char hand_size = hand.size();
-                for(int i = 0; i < hand_size; i++)
+                for(int i = 0; i < HAND_SIZE; i++)
                 {
                     if (hand.at(i).GetColor() == color_trump)
                     {
-                        possible_options.push_back(hand.at(i));
+                        possible_options.at(optionsCount) = (hand.at(i));
+                        optionsCount++;
                     }
                 }
             }
-            if(!possible_options.empty())
+            if(optionsCount != 0)
             {
+                for (int i = optionsCount; i < HAND_SIZE; i++)
+                {
+                    possible_options.at(i) = NULLCARD;//filling with empty options
+                }
                 return possible_options;
             }
             return hand;
@@ -217,13 +249,12 @@ vector<Card>  Helper::playable_by_hand_and_played_cards
     return possible_options;
 }
 
-unsigned char Helper::calculate_winner_of_deal(const vector<Card>& playedCards,const string& announce)
+unsigned char Helper::calculate_winner_of_deal(const array<Card , NUMBER_OF_PLAYERS>& playedCards,const string& announce)
 {
     Card current_winner = playedCards.at(0);
     if(announce == "TRUMP")
     {
-        unsigned char playedCardsSize = playedCards.size();
-        for (int i = 0; i < playedCardsSize; i++)
+        for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
         {
             if (playedCards.at(i).GetColor() == color_trump && current_winner.GetColor() != color_trump)
             {
@@ -247,8 +278,7 @@ unsigned char Helper::calculate_winner_of_deal(const vector<Card>& playedCards,c
     }
     else
     {
-        unsigned char playedCardsSize = playedCards.size();
-        for (int i = 0; i < playedCardsSize; i++)
+        for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
         {
             if (compare_cards_power(playedCards.at(i), current_winner, announce))
             {
@@ -257,6 +287,62 @@ unsigned char Helper::calculate_winner_of_deal(const vector<Card>& playedCards,c
         }
     }
     
-    return distance(playedCards.begin(), playedCards.begin() + (int)findCard(playedCards, current_winner));
+    for (int winningCardID = 0 ; winningCardID < NUMBER_OF_PLAYERS; winningCardID++)
+    {
+        if(playedCards.at(winningCardID).GetColor() == current_winner.GetColor() && playedCards.at(winningCardID).GetPower() == current_winner.GetPower())
+        {
+            return winningCardID;
+        }
+    }
+    cerr << "NO WINNER OF DEAL" << endl;
+    return ERROR;
 }
 
+unsigned char Helper::count_played_cards(const array<Card , NUMBER_OF_PLAYERS>& playedCards)
+{
+    unsigned char playedCardsSize = 0 ;
+    for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if(playedCards.at(i).GetColor() != NULLCARD.GetColor() && playedCards.at(i).GetPower() != NULLCARD.GetPower())
+        {
+            playedCardsSize++;
+        }
+    }
+    return playedCardsSize;
+}
+
+unsigned char Helper::count_played_cards(const array<Card , HAND_SIZE>& playedCards)
+{
+    unsigned char playedCardsSize = 0 ;
+    for(int i = 0; i < HAND_SIZE; i++)
+    {
+        if(playedCards.at(i).GetColor() != NULLCARD.GetColor() && playedCards.at(i).GetPower() != NULLCARD.GetPower())
+        {
+            playedCardsSize++;
+        }
+    }
+    return playedCardsSize;
+}
+
+bool Helper::sort_hand(array<Card , HAND_SIZE>& hand)
+{
+    int i, j;
+    for (i = 1; i < HAND_SIZE; i++)
+    {
+        Card key = hand.at(i);
+        j = i - 1;
+
+        // Move elements of arr[0..i-1], 
+        // that are greater than key, to one
+        // position ahead of their
+        // current position
+        while (j >= 0 && compare_cards(hand.at(j), key))
+        {
+            hand.at(j + 1) = hand.at(j);
+            j = j - 1;
+        }
+        hand.at(j + 1) = key;
+    }
+
+    return true;
+}

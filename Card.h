@@ -22,5 +22,4 @@ class Card
     unsigned char GetColor()const;
 };
 
-
 std::ostream& operator<<(ostream &out,const Card& c);

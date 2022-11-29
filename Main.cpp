@@ -12,12 +12,18 @@ int main()
         }
     }
     random_shuffle(deck.begin(), deck.end());
-    std::vector<Card> hand1(deck.begin(), deck.begin() + NUMBER_OF_DEALS);
-    std::vector<Card> hand2(deck.begin() + NUMBER_OF_DEALS, deck.begin() + 2 * NUMBER_OF_DEALS);
-    std::vector<Card> hand3(deck.begin() + 2 * NUMBER_OF_DEALS, deck.begin() + 3 * NUMBER_OF_DEALS);
-    std::vector<Card> hand4(deck.begin() + 3 * NUMBER_OF_DEALS, deck.end());
+    std::array<Card, HAND_SIZE> hand1, hand2, hand3, hand4;
+    
+    for(int i = 0; i < HAND_SIZE; i++)
+    {
+        hand1.at(i) = deck.at(HAND_SIZE * 0 + i);
+        hand2.at(i) = deck.at(HAND_SIZE * 1 + i);
+        hand3.at(i) = deck.at(HAND_SIZE * 2 + i);
+        hand4.at(i) = deck.at(HAND_SIZE * 3 + i);
+    }
+
  
-    GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS") ;
+    GamePlayer AI(hand1, hand2, hand3, hand4, "NO_TRUMP") ;
     AI.PrintHands();
     AI.StartProcessing();
     return 0;
