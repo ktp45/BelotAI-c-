@@ -93,7 +93,7 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
         if(turn_id == NUMBER_OF_PLAYERS * second_cards)
         {
             return_when_all_cards_played();
-            second_deal_combinations.at(second_deals)= (current_deal);
+            second_deal_combinations.at(second_deals) = (current_deal);
             second_deals++;
             return true;
         }
@@ -166,15 +166,15 @@ void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
         for(long long i = 0; i < SecondDealsCount; i++)
         {
             array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE> mergedDeal;
-            for(unsigned char i = 0 ; i < HAND_SIZE; i++)
+            for(unsigned char j = 0 ; j < HAND_SIZE; j++)
             {
-                if(HAND_SIZE < cardsNumber)
+                if(i < cardsNumber)
                 {
-                    mergedDeal.at(i) = first_deals_combinations.at(deal_id).at(i);
+                    mergedDeal.at(i) = first_deals_combinations.at(deal_id).at(j);
                 }
                 else 
                 {
-                    mergedDeal.at(i) = second_deal_combinations.at(deal_id).at(i);
+                    mergedDeal.at(j) = second_deal_combinations.at(i).at(j);
                 }
                 
             }
@@ -186,7 +186,8 @@ void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
             }
             saved_deals++;
         }
-        second_deal_combinations.clear();
+ 
+        second_deals = 0; 
         auto time_write_end = chrono::steady_clock::now();
         cout << "Time write" << chrono::duration_cast<chrono::seconds>(time_write_end - time_write).count() << endl;
         auto end = chrono::steady_clock::now();

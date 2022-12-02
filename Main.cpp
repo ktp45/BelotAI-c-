@@ -23,7 +23,7 @@ int main()
     }
 
  
-    GamePlayer AI(hand1, hand2, hand3, hand4, "NO_TRUMP") ;
+    GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS") ;
     AI.PrintHands();
     AI.StartProcessing();
     return 0;

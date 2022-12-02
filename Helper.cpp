@@ -62,12 +62,12 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
         // any card is bigger than the nullcard
     if(card1.GetColor() == NULLCARD.GetColor())
     {
-        return true;
+        return false;
     }
 
     if(card2.GetColor() == NULLCARD.GetColor())
     {           
-        return false;
+        return true;
     }
 
     unsigned char points_first = ALL_TRUMP_POINTS.at(card1.GetPower());
@@ -84,7 +84,7 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
     }
     else if (points_first == points_second)
     {
-        return card1.GetPower() > card2.GetColor();
+        return card1.GetPower() > card2.GetPower();
     }
     return false;
 }
@@ -120,15 +120,31 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
 
     if (announce == "ALL_TRUMP")
     {
-
         if(!search_by_color(hand, playedCards.at(0).GetColor()))
         {
             return hand;
         }
 
+        bool have_bigger_trump = false;
         for (int i = 0; i < HAND_SIZE; i++)
         {
-            if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.back(), announce))
+            if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
+            {
+                have_bigger_trump = true;
+            }
+        }
+
+        for (int i = 0; i < HAND_SIZE; i++)
+        {
+            if(have_bigger_trump)
+            {
+                if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
+                {
+                    possible_options.at(optionsCount) = (hand.at(i));
+                    optionsCount++;
+                }
+            }
+            else if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
             {
                 possible_options.at(optionsCount) = (hand.at(i));
                 optionsCount++;
@@ -137,6 +153,9 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
 
         if(optionsCount == 0)
         {
+            
+            if (!have_bigger_trump)
+            printf ( " problem \n \n");
             return hand;
         }
         else
