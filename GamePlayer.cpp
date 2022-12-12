@@ -261,7 +261,7 @@ void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
         }
         auto end = chrono::steady_clock::now();
         cout << "Current Played: " << saved_deals << " time:" << chrono::duration_cast<chrono::seconds>(end - start).count() << " " << totalmaxed <<  endl;
-        FirstDealsCount = FirstDealsCount;
+        FirstDealsCount = FirstDealsCount - m_ucThreadNumber;
         cout << "Remaining recursive calls : " << FirstDealsCount - m_ucThreadNumber << endl;
     }
 
