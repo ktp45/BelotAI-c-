@@ -4,6 +4,11 @@
 #include <utility>
 #include <array>
 #include "Card.h"
+#include <pthread.h>
+#include <thread>
+#include <string>
+#include <cstdlib>
+#include <unistd.h>
 // """0 equals to 0 and 1 to 1 =>  00101 is 8 of DIAMONDS and 11100 is Ace of CLUBS"""
 // """First 3 digits represent the value and the last 2 represent the color"""
 
@@ -46,8 +51,16 @@ static const Card NULLCARD(ERROR, ERROR);
 static const std::array<Card, HAND_SIZE> NULLHAND{NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD};
 
 const size_t EXPECTED_FIRST_DEAL_COMBINATIONS     = 5000000;
-const size_t EXPECTED_SECOND_DEAL_COMBINATIONS    = 5000000;
+const size_t EXPECTED_SECOND_DEAL_COMBINATIONS    = 10000000;
 const size_t EXPECTED_SAVED_DEAL_COMBINATIONS    = 25000000;
+
+static const std::vector <std::string> TRUMP_NAMES =
+{
+    "CLUBS",
+    "DIAMONDS",
+    "HEARTS",
+    "SPADES"
+};
 
 static const std::vector <unsigned char> ALL_TRUMP_POINTS =
 {

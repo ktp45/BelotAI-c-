@@ -1,7 +1,14 @@
 #include "Card.h"
-
+#include <vector>
 using namespace std;
 
+static const std::vector <std::string> TRUMP_NAMES =
+{
+    "CLUBS",
+    "DIAMONDS",
+    "HEARTS",
+    "SPADES"
+};
 
 Card::Card()
 {
@@ -32,7 +39,15 @@ unsigned char Card::GetColor()const
 
 std::ostream& operator<<(ostream &out, const Card& c) //the cards is printed as (' name and color')
 {
-	out << "(" << static_cast<int>(c.GetPower()) << ")" << "(" << static_cast<int>(c.GetColor()) << ")";
+    if(!(static_cast<int>(c.GetColor() == 69)))
+    {
+        out << "(" << static_cast<int>(c.GetPower()) << ")" << "(" << TRUMP_NAMES.at(static_cast<int>(c.GetColor()))  << ")";
+    }
+    else 
+    {   
+        out << "(" << static_cast<int>(c.GetPower()) << ")" << "(" <<static_cast<int>(c.GetColor())  << ")";
+    }
+	
     return out;
 }
 

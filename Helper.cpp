@@ -102,7 +102,7 @@ bool Helper::search_by_color(const array<Card, HAND_SIZE>& hand, unsigned char c
 }
 
 array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
-(const string& announce,const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
+(const string& announce, const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
 {
     unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
 
@@ -110,12 +110,11 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
     {
         cerr << "NO ANNOUNCE" << endl;
     }
-
-    if (playedCards.at(0).GetColor() == NULLCARD.GetColor() && playedCards.at(0).GetPower() == NULLCARD.GetPower())
+    
+    if ((playedCards.at(0).GetColor() == NULLCARD.GetColor()) && (playedCards.at(0).GetPower() == NULLCARD.GetPower()))
     {
         return hand;
     }
- 
     array <Card, HAND_SIZE> possible_options;
 
     if (announce == "ALL_TRUMP")
@@ -245,6 +244,7 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
                     }
                 }
             }
+
             if(optionsCount != 0)
             {
                 for (int i = optionsCount; i < HAND_SIZE; i++)

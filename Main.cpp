@@ -11,6 +11,7 @@ int main()
             deck.push_back(Card(j, i));
         }
     }
+    std::srand(std::time(0));
     random_shuffle(deck.begin(), deck.end());
     std::array<Card, HAND_SIZE> hand1, hand2, hand3, hand4;
     
@@ -23,7 +24,7 @@ int main()
     }
 
  
-    GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS") ;
+    GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS", 8) ;
     AI.PrintHands();
     AI.StartProcessing();
     return 0;
