@@ -4,11 +4,11 @@
 #include <utility>
 #include <array>
 #include "Card.h"
-#include <pthread.h>
 #include <thread>
 #include <string>
 #include <cstdlib>
 #include <unistd.h>
+
 // """0 equals to 0 and 1 to 1 =>  00101 is 8 of DIAMONDS and 11100 is Ace of CLUBS"""
 // """First 3 digits represent the value and the last 2 represent the color"""
 
