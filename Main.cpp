@@ -23,7 +23,6 @@ int main()
         hand4.at(i) = deck.at(HAND_SIZE * 3 + i);
     }
 
- 
     GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS", 8) ;
     AI.PrintHands();
     AI.StartProcessing();

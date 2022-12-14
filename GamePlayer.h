@@ -71,6 +71,10 @@ long long GetFirstDealsCount();
 
 long long GetSecondDealsCount(unsigned char thread_id);
 
+long long GetSavedDealsCount();
+
+long long GetPlayedCombinationsCount();
+
 /* final results */
 bool return_when_all_cards_played();
 

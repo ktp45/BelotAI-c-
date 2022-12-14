@@ -21,6 +21,13 @@ class Helper
     bool search_by_color(const array<Card, NUMBER_OF_DEALS>& hand, unsigned char color);
     // """Return True if the color is in the hand else False"""
 
+    array <Card, HAND_SIZE> playableNoTrump
+    (const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards);
+    array <Card, HAND_SIZE> playableAllTrump
+    (const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards);
+    array <Card, HAND_SIZE> playableTrump
+    (const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards);
+
     array <Card, HAND_SIZE> playable_by_hand_and_played_cards 
     (const string& announce,const array<Card, NUMBER_OF_DEALS>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards);
     //       """Logic about which cards are allowed to be played"""

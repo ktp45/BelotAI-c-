@@ -2,7 +2,10 @@
 #include <mutex>
 #include <queue>
 
-std::mutex mtx;
+std::mutex mtx_queue;
+std::mutex mtx_write_deal;
+std::mutex mtx_reset_deal;
+std::mutex mtx_update_combinations;
 
 GamePlayer::GamePlayer()
 {
@@ -21,6 +24,7 @@ GamePlayer::GamePlayer(array<Card, HAND_SIZE> hand1, array<Card, HAND_SIZE> hand
     m_aCards.at(1) = (hand2);
     m_aCards.at(2) = (hand3);
     m_aCards.at(3) = (hand4);
+    sort_hands();
 
     m_ui64PlayedCombinations = 0;
     m_ui64first_deals = 0;
@@ -111,9 +115,11 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
     {
         if(turn_id == NUMBER_OF_PLAYERS * second_cards)
         {
+            mtx_update_combinations.lock();
             return_when_all_cards_played();
             m_vSecond_deal_combinations.at(thread_id).at(m_vSecond_deals.at(thread_id)) = (current_deal);
             m_vSecond_deals.at(thread_id)++;
+            mtx_update_combinations.unlock();
             return true;
         }
     }
@@ -144,6 +150,17 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
 }
 
 /* manager of brute force */
+void GamePlayer::play_deals_fast(ThreadData data)
+{
+    unsigned char first_cards = data.first_cards;
+    unsigned char second_cards = data.second_cards;
+    long long deal_id = data.deal_id;
+    unsigned char thread_id = data.thread_id;
+    string announce = data.announce;
+
+    play_deals_fast(first_cards, second_cards, deal_id, thread_id, announce);
+}
+
 void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second_cards, long long deal_id, unsigned char thread_id,
                                  string announce)
 {
@@ -174,8 +191,8 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
         }
         else
         {
-            play_recursive(0, const_cast<array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS>&>(m_vRemaining_cards.at(deal_id)), 
-                            tempPlayedCards, tempCurrentDeal, first_cards, second_cards, 0, thread_id, current_announce);
+            play_recursive(0, m_vRemaining_cards.at(deal_id), tempPlayedCards, tempCurrentDeal, 
+                            first_cards, second_cards, 0, thread_id, current_announce);
             return;
         }
     }
@@ -183,13 +200,13 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
 }
 
 /* separator between methods */
-void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
+void GamePlayer::play_separated_to_x_then_y(unsigned char firstCardCount)
 {
     auto start = chrono::steady_clock::now();
     int totalmaxed = 0 ;
-    play_deals_fast(cardsNumber);
+    play_deals_fast(firstCardCount);
     long long FirstDealsCount = GetFirstDealsCount();
-    cout << "Played Deals with "<< (int)cardsNumber << " : " << FirstDealsCount << endl;
+    cout << "Played Deals with "<< (int)firstCardCount << " : " << FirstDealsCount << endl;
 
     std::queue<int> RemainingDealIDs;
     for (int i = 0; i < FirstDealsCount; i++)
@@ -202,92 +219,87 @@ void GamePlayer::play_separated_to_x_then_y(unsigned char cardsNumber)
     vector<thread> threads;
     threads.resize(m_ucThreadNumber);
 
-    for(long long deal_id = 0 ; deal_id < FirstDealsCount; deal_id += m_ucThreadNumber)
-    {
-        int thread_id = 0;
-        for (thread_id = 0; thread_id < m_ucThreadNumber; thread_id++)
+    int thread_id = 0;
+    for (thread_id = 0; thread_id < m_ucThreadNumber; thread_id++)
+    { 
+        current_data.at(thread_id).second_cards = HAND_SIZE - firstCardCount;
+        current_data.at(thread_id).first_cards = 0;
+        current_data.at(thread_id).thread_id = thread_id;
+        current_data.at(thread_id).announce = m_sAnnounce;
+
+        std::thread tempThread([&]
         { 
-        //    current_data.at(thread_id).deal_id = deal_id + thread_id;
-           current_data.at(thread_id).second_cards = HAND_SIZE - cardsNumber;
-           current_data.at(thread_id).first_cards = 0;
-           current_data.at(thread_id).thread_id = thread_id;
-           current_data.at(thread_id).announce = m_sAnnounce;
-
-           std::thread tempThread([&]
-           { /*TODO MAKE THREAD FUNCTION*/
-                while(true)
+            while(true)
+            {
+                mtx_queue.lock();
+                if(RemainingDealIDs.empty())
                 {
-                    mtx.lock();
-                    if(RemainingDealIDs.empty())
-                    {
-                        mtx.unlock();
-                        break;
-                    }
-                    int currentDealID = RemainingDealIDs.front();
-                    RemainingDealIDs.pop();
-                    mtx.unlock();
-                    play_deals_fast(0, current_data.at(thread_id).second_cards, current_data.at(thread_id).deal_id, 
-                                    current_data.at(thread_id).thread_id, current_data.at(thread_id).announce);
-
-                    long long SecondDealsCount = GetSecondDealsCount(thread_id);
-                    for(long long i = 0; i < SecondDealsCount; i++)
-                    {
-                        array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE> mergedDeal;
-                        for(unsigned char j = 0 ; j < HAND_SIZE; j++)
-                        {
-                            if(i < cardsNumber)
-                            {
-                                mergedDeal.at(i) = m_vFirst_deals_combinations.at(deal_id + thread_id).at(j);
-                            }
-                            else 
-                            {
-                                mergedDeal.at(j) = m_vSecond_deal_combinations.at(thread_id).at(i).at(j);
-                            }
-                        }
-
-                        mtx.lock();
-
-                        if(m_ui64SavedDeals >= EXPECTED_SAVED_DEAL_COMBINATIONS)
-                        {
-                            totalmaxed ++;
-                            m_ui64SavedDeals = 0;
-                        }
-
-                        
-                        m_vPlayed_deals.at(m_ui64SavedDeals) = (mergedDeal);
-
-                        m_ui64SavedDeals++;
-
-                        mtx.unlock();                     
-                    }
-                    mtx.lock();
-                    m_vSecond_deals.at(thread_id) = 0; 
-                    mtx.unlock(); 
-                    if(m_ui64PlayedCombinations % 10 == 1)
-                    {
-                        auto end = chrono::steady_clock::now();
-                        cout << "Current Played: " << m_ui64SavedDeals << " time:" << chrono::duration_cast<chrono::seconds>(end - start).count() << " " << totalmaxed <<  endl;
-                        
-                        cout << "Remaining recursive calls : " << RemainingDealIDs.size()  << endl;                        
-                    }
+                    mtx_queue.unlock();
+                    break;
                 }
+                int currentDealID = RemainingDealIDs.front();
+                RemainingDealIDs.pop();
+                current_data.at(thread_id).deal_id = currentDealID;
+                mtx_queue.unlock();
                 
-            });
-            threads.at(thread_id) = std::move(tempThread);
-        }
+                play_deals_fast(current_data.at(thread_id));
 
-        thread_id = 0;
+                long long SecondDealsCount = GetSecondDealsCount(thread_id);
+                for(long long i = 0; i < SecondDealsCount; i++)
+                {
+                    array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE> mergedDeal;
+                    for(unsigned char j = 0 ; j < HAND_SIZE; j++)
+                    {
+                        if(j < firstCardCount)
+                        {
+                            mergedDeal.at(j) = m_vFirst_deals_combinations.at(currentDealID).at(j);
+                        }
+                        else 
+                        {
+                            mergedDeal.at(j) = m_vSecond_deal_combinations.at(thread_id).at(i).at(j);
+                        }
+                    }
 
-        for (thread_id = 0; thread_id < m_ucThreadNumber; thread_id++)
-        {
-            threads.at(thread_id).join();
-        }
-        auto end = chrono::steady_clock::now();
-        cout << "Current Played: " << m_ui64SavedDeals << " time:" << chrono::duration_cast<chrono::seconds>(end - start).count() << " " << totalmaxed <<  endl;
-        FirstDealsCount = FirstDealsCount - m_ucThreadNumber;
-        cout << "Remaining recursive calls : " << FirstDealsCount - m_ucThreadNumber << endl;
+                    mtx_write_deal.lock();
+
+                    if(GetSavedDealsCount() >= EXPECTED_SAVED_DEAL_COMBINATIONS)
+                    {
+                        totalmaxed ++;
+                        m_ui64SavedDeals = 0;
+                    }
+                    
+                    m_vPlayed_deals.at(GetSavedDealsCount()) = (mergedDeal);
+
+                    m_ui64SavedDeals++;
+
+                    mtx_write_deal.unlock();                     
+                }
+                mtx_reset_deal.lock();
+                m_vSecond_deals.at(thread_id) = 0; 
+                mtx_reset_deal.unlock(); 
+                if(GetPlayedCombinationsCount() % 10 == 1)
+                {
+                    auto end = chrono::steady_clock::now();
+                    cout << "Current Played: " << GetSavedDealsCount() << " time:" << chrono::duration_cast<chrono::seconds>(end - start).count() << " " << totalmaxed <<  endl;
+                    
+                    cout << "Remaining recursive calls : " << RemainingDealIDs.size()  << endl;                        
+                }
+            }
+            
+        });
+        threads.at(thread_id) = std::move(tempThread);
     }
 
+    thread_id = 0;
+
+    for (thread_id = 0; thread_id < m_ucThreadNumber; thread_id++)
+    {
+        threads.at(thread_id).join();
+    }
+    auto end = chrono::steady_clock::now();
+    cout << "Current Played: " << GetSavedDealsCount() << " time:" << chrono::duration_cast<chrono::seconds>(end - start).count() << " " << totalmaxed <<  endl;
+    FirstDealsCount = FirstDealsCount - m_ucThreadNumber;
+    cout << "Remaining recursive calls : " << FirstDealsCount - m_ucThreadNumber << endl;
 }
 
 
@@ -301,15 +313,25 @@ long long GamePlayer::GetSecondDealsCount(unsigned char thread_id)
     return m_vSecond_deals.at(thread_id);
 }
 
+long long GamePlayer::GetSavedDealsCount()
+{
+    return m_ui64SavedDeals;
+}
+
+long long GamePlayer::GetPlayedCombinationsCount()
+{
+    return m_ui64PlayedCombinations;
+}
+
+
 /* final results */
 bool GamePlayer::return_when_all_cards_played()
 {
-    mtx.lock();
     m_ui64PlayedCombinations ++;
-    mtx.unlock();
-    if (m_ui64PlayedCombinations % EXPECTED_FIRST_DEAL_COMBINATIONS == 0 )
+
+    if (GetPlayedCombinationsCount() % EXPECTED_FIRST_DEAL_COMBINATIONS == 0 )
     {
-        cout << m_ui64PlayedCombinations << endl;
+        cout << GetPlayedCombinationsCount() << endl;
     }
     return true;
 }

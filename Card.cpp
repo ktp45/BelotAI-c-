@@ -10,6 +10,18 @@ static const std::vector <std::string> TRUMP_NAMES =
     "SPADES"
 };
 
+static const std::vector <std::string> CARD_NAMES =
+{
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K",
+    "A"
+};
+
 Card::Card()
 {
     m_ucColor = 69;
@@ -39,9 +51,9 @@ unsigned char Card::GetColor()const
 
 std::ostream& operator<<(ostream &out, const Card& c) //the cards is printed as (' name and color')
 {
-    if(!(static_cast<int>(c.GetColor() == 69)))
+    if(!(static_cast<int>(c.GetColor() == 69)) && !(static_cast<int>(c.GetPower() == 69)))
     {
-        out << "(" << static_cast<int>(c.GetPower()) << ")" << "(" << TRUMP_NAMES.at(static_cast<int>(c.GetColor()))  << ")";
+        out << "(" << CARD_NAMES.at(static_cast<int>(c.GetPower())) << ")" << "(" << TRUMP_NAMES.at(static_cast<int>(c.GetColor()))  << ")";
     }
     else 
     {   

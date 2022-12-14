@@ -4,13 +4,13 @@ using namespace std;
 Helper::Helper()
 {
     color_trump = ERROR;
-};
+}
 
 bool Helper::InitHelper(unsigned char color)
 {
     color_trump = color;
     return true;
-};
+}
 
 /* first compare color than power */
 bool Helper::compare_cards(Card card1, Card card2)
@@ -24,7 +24,7 @@ bool Helper::compare_cards(Card card1, Card card2)
         return card1.GetPower() > card2.GetPower();
     }
     return false;
-};
+}
 
 unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card)
 {
@@ -101,11 +101,170 @@ bool Helper::search_by_color(const array<Card, HAND_SIZE>& hand, unsigned char c
     return false;
 }
 
+array <Card, HAND_SIZE> Helper::playableNoTrump
+(const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
+{
+    unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
+    array <Card, HAND_SIZE> possible_options;
+    if(!search_by_color(hand, playedCards.at(0).GetColor()))
+    {
+        return hand;
+    }
+
+    for (int i = 0; i < HAND_SIZE; i++)
+    {
+        if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
+        {
+            possible_options.at(optionsCount) = (hand.at(i));
+            optionsCount++;
+        }
+    }
+
+    if(optionsCount == 0)
+    {
+        return hand;
+    }
+    else
+    {
+        for (int i = optionsCount; i < HAND_SIZE; i++)
+        {
+            possible_options.at(i) = NULLCARD;//filling with empty options
+        }
+    }        
+    return possible_options;
+}
+
+array <Card, HAND_SIZE> Helper::playableAllTrump
+(const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
+{
+    unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
+    array <Card, HAND_SIZE> possible_options;
+    string announce = "ALL_TRUMP";
+
+    if(!search_by_color(hand, playedCards.at(0).GetColor()))
+    {
+        return hand;
+    }
+
+    bool have_bigger_trump = false;
+    for (int i = 0; i < HAND_SIZE; i++)
+    {
+        if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
+        {
+            have_bigger_trump = true;
+        }
+    }
+
+    for (int i = 0; i < HAND_SIZE; i++)
+    {
+        if(have_bigger_trump)
+        {
+            if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
+            {
+                possible_options.at(optionsCount) = (hand.at(i));
+                optionsCount++;
+            }
+        }
+        else if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
+        {
+            possible_options.at(optionsCount) = (hand.at(i));
+            optionsCount++;
+        }
+    }
+
+    if(optionsCount == 0)
+    {
+        
+        if (!have_bigger_trump)
+        cerr << ( " BAD ALL TRUMP LOGIC problem \n \n");
+        return hand;
+    }
+    else
+    {
+        for (int i = optionsCount; i < HAND_SIZE; i++)
+        {
+            possible_options.at(i) = NULLCARD;       //filling with empty options
+        }
+    }
+    return possible_options;
+}
+
+array <Card, HAND_SIZE> Helper::playableTrump
+(const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
+{
+    unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
+    array <Card, HAND_SIZE> possible_options;
+    if(color_trump == ERROR)
+    {
+        cerr << "NO TRUMP COLOR!" << endl;
+    }
+
+    if (!search_by_color(hand, playedCards.at(0).GetColor())) // if you dont have card with same color of first one
+    {
+        Card last_trump(0,ERROR);
+        for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        {
+            if(playedCards.at(i).GetColor() == color_trump && playedCards.at(i).GetPower() >= last_trump.GetPower())
+            {
+                last_trump = playedCards.at(i); // check if someone used trump
+            }
+        }
+
+        bool teammate_trump = false;
+        if(playedCardsSize > 2)
+        {
+            if(last_trump.GetPower() != playedCards.at(playedCardsSize - 2).GetPower())
+            {
+                teammate_trump = true;
+            }
+        }
+        if(last_trump.GetColor() != ERROR && !teammate_trump) 
+        {   
+                    // if someone used trump and u have highter u must use it unless it's your teammate
+            for(int i = 0; i < HAND_SIZE; i++)
+            {
+                if (hand.at(i).GetColor() == color_trump && hand.at(i).GetPower() > last_trump.GetPower())
+                {
+                    possible_options.at(optionsCount) = (hand.at(i));
+                    optionsCount++;
+                }
+            }
+        }
+        else if(last_trump.GetColor() == ERROR)
+        {
+            for(int i = 0; i < HAND_SIZE; i++)
+            {
+                if (hand.at(i).GetColor() == color_trump)
+                {
+                    possible_options.at(optionsCount) = (hand.at(i));
+                    optionsCount++;
+                }
+            }
+        }
+
+        if(optionsCount != 0)
+        {
+            for (int i = optionsCount; i < HAND_SIZE; i++)
+            {
+                possible_options.at(i) = NULLCARD;//filling with empty options
+            }
+            return possible_options;
+        }
+        return hand;
+    }
+    else if(playedCards.at(0).GetColor() == color_trump) // if you have card with same color an play on trump all trump logic aplies
+    {
+        return playableAllTrump(hand, playedCards);
+    }
+    else // if you have card with same color an play other than trump no trump logic aplies
+    {
+        return playableNoTrump(hand, playedCards);
+    }
+}
+
 array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
 (const string& announce, const array<Card, HAND_SIZE>& hand, const array<Card , NUMBER_OF_PLAYERS>& playedCards)
 {
-    unsigned char optionsCount = 0 , playedCardsSize = count_played_cards(playedCards);
-
     if (announce.empty())
     {
         cerr << "NO ANNOUNCE" << endl;
@@ -115,158 +274,25 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
     {
         return hand;
     }
-    array <Card, HAND_SIZE> possible_options;
 
     if (announce == "ALL_TRUMP")
     {
-        if(!search_by_color(hand, playedCards.at(0).GetColor()))
-        {
-            return hand;
-        }
-
-        bool have_bigger_trump = false;
-        for (int i = 0; i < HAND_SIZE; i++)
-        {
-            if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
-            {
-                have_bigger_trump = true;
-            }
-        }
-
-        for (int i = 0; i < HAND_SIZE; i++)
-        {
-            if(have_bigger_trump)
-            {
-                if(playedCards.at(0).GetColor() == hand.at(i).GetColor() && compare_cards_power(hand.at(i), playedCards.at(playedCardsSize - 1), announce))
-                {
-                    possible_options.at(optionsCount) = (hand.at(i));
-                    optionsCount++;
-                }
-            }
-            else if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
-            {
-                possible_options.at(optionsCount) = (hand.at(i));
-                optionsCount++;
-            }
-        }
-
-        if(optionsCount == 0)
-        {
-            
-            if (!have_bigger_trump)
-            printf ( " problem \n \n");
-            return hand;
-        }
-        else
-        {
-            for (int i = optionsCount; i < HAND_SIZE; i++)
-            {
-                possible_options.at(i) = NULLCARD;//filling with empty options
-            }
-        }
-        return possible_options;
+        return playableAllTrump(hand, playedCards);
     }
     if (announce == "NO_TRUMP")
     {
-        if(!search_by_color(hand, playedCards.at(0).GetColor()))
-        {
-            return hand;
-        }
-
-        for (int i = 0; i < HAND_SIZE; i++)
-        {
-            if(playedCards.at(0).GetColor() == hand.at(i).GetColor())
-            {
-                possible_options.at(optionsCount) = (hand.at(i));
-                optionsCount++;
-            }
-        }
-
-        if(optionsCount == 0)
-        {
-            return hand;
-        }
-        else
-        {
-            for (int i = optionsCount; i < HAND_SIZE; i++)
-            {
-                possible_options.at(i) = NULLCARD;//filling with empty options
-            }
-        }        
-        return possible_options;
+        return playableNoTrump(hand, playedCards);
     }
     if (announce == "TRUMP")
     {
-        if(color_trump == ERROR)
-        {
-            cerr << "NO TRUMP COLOR!" << endl;
-        }
-
-        if (!search_by_color(hand, playedCards.at(0).GetColor())) // if you dont have card with same color of first one
-        {
-            Card last_trump(0,ERROR);
-            for (int i = 0; i < NUMBER_OF_PLAYERS; i++)
-            {
-                if(playedCards.at(i).GetColor() == color_trump && playedCards.at(i).GetPower() >= last_trump.GetPower())
-                {
-                    last_trump = playedCards.at(i); // check if someone used trump
-                }
-            }
-
-            bool teammate_trump = false;
-            if(playedCardsSize > 2)
-            {
-                if(last_trump.GetPower() != playedCards.at(playedCardsSize - 2).GetPower())
-                {
-                    teammate_trump = true;
-                }
-            }
-            if(last_trump.GetColor() != ERROR && !teammate_trump) 
-            {   
-                     // if someone used trump and u have highter u must use it unless it's your teammate
-                for(int i = 0; i < HAND_SIZE; i++)
-                {
-                    if (hand.at(i).GetColor() == color_trump && hand.at(i).GetPower() > last_trump.GetPower())
-                    {
-                        possible_options.at(optionsCount) = (hand.at(i));
-                        optionsCount++;
-                    }
-                }
-            }
-            else if(last_trump.GetColor() == ERROR)
-            {
-                for(int i = 0; i < HAND_SIZE; i++)
-                {
-                    if (hand.at(i).GetColor() == color_trump)
-                    {
-                        possible_options.at(optionsCount) = (hand.at(i));
-                        optionsCount++;
-                    }
-                }
-            }
-
-            if(optionsCount != 0)
-            {
-                for (int i = optionsCount; i < HAND_SIZE; i++)
-                {
-                    possible_options.at(i) = NULLCARD;//filling with empty options
-                }
-                return possible_options;
-            }
-            return hand;
-        }
-        else if(playedCards.at(0).GetColor() == color_trump) // if you have card with same color an play on trump all trump logic aplies
-        {
-            return playable_by_hand_and_played_cards("ALL_TRUMP", hand, playedCards);
-        }
-        else // if you have card with same color an play other than trump no trump logic aplies
-        {
-            return playable_by_hand_and_played_cards("NO_TRUMP", hand, playedCards);
-        }
+        return playableTrump(hand, playedCards);
     }
+    
     cerr << "INVALID ANNOUNCE: " << announce <<  endl;
-    return possible_options;
+    return hand;
 }
+
+
 
 unsigned char Helper::calculate_winner_of_deal(const array<Card , NUMBER_OF_PLAYERS>& playedCards,const string& announce)
 {
