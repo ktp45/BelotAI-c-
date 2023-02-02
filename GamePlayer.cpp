@@ -138,7 +138,7 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
     for (int i = 0; i < posibleOptionsCount; i++ )
     {
         array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
-        newHands.at(current_player).at(m_helper.findCard(newHands.at(current_player), posibleOptions.at(i))) = NULLCARD;
+        newHands.at(current_player).at(m_helper.findCard(newHands.at(current_player), posibleOptions.at(i), HAND_SIZE - turn_id / 4)) = NULLCARD;
 
         array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
 

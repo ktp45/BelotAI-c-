@@ -9,7 +9,7 @@ class Helper
     Helper();
     bool InitHelper(unsigned char);
 
-    unsigned char findCard(array<Card, NUMBER_OF_DEALS> hand, Card card);
+    unsigned char findCard(array<Card, NUMBER_OF_DEALS> hand, Card card, unsigned char handSize);
     //clever find
 
     bool compare_cards(Card card1, Card card2);
@@ -39,4 +39,6 @@ class Helper
     unsigned char count_played_cards(const array<Card , HAND_SIZE>& playedCards);
 
     bool sort_hand(array<Card , HAND_SIZE>& hand);
+    //sort using insertion sort *Метод на Картоиграча*
+    bool sort_by_power(vector<Card>& hand, string announce);
 };

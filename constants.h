@@ -46,6 +46,12 @@ const size_t HAND_SIZE = 8;
 const size_t NUMBER_OF_DEALS = 8;
 const size_t NUMBER_OF_PLAYERS = 4;
 const size_t NUMBER_OF_CARDS = 32;
+const unsigned char CLUBS_ANNOUNCE = 0;
+const unsigned char DIAMONDS_ANNOUNCE = 1;
+const unsigned char HEARTS_ANNOUNCE = 2;
+const unsigned char SPADES_ANNOUNCE = 3;
+const unsigned char NO_TRUMP_ANNOUNCE = 4;
+const unsigned char ALL_TRUMP_ANNOUNCE = 5;
 
 static const Card NULLCARD(ERROR, ERROR);
 static const std::array<Card, HAND_SIZE> NULLHAND{NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD};

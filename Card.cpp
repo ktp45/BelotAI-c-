@@ -49,7 +49,7 @@ unsigned char Card::GetColor()const
     return m_ucColor;
 }
 
-std::ostream& operator<<(ostream &out, const Card& c) //the cards is printed as (' name and color')
+std::ostream& operator<<(ostream &out, const Card& c) //the cards are printed as (' name and color')
 {
     if(!(static_cast<int>(c.GetColor() == 69)) && !(static_cast<int>(c.GetPower() == 69)))
     {

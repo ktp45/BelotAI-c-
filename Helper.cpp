@@ -26,7 +26,7 @@ bool Helper::compare_cards(Card card1, Card card2)
     return false;
 }
 
-unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card)
+unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned char handSize)
 {
     if(card.GetColor() == HEARTS || card.GetColor() == SPADES)
     {
@@ -49,7 +49,6 @@ unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card)
         }
     }
 
-    cerr << "Cannot FIND CARD" << endl;
     return ERROR;
 }
 
@@ -74,8 +73,9 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
     unsigned char points_second = ALL_TRUMP_POINTS.at(card2.GetPower()); // all trump by default 
     if (announce == "NO_TRUMP")
     {
-        unsigned char points_first = NO_TRUMP_POINTS.at(card1.GetPower());
-        unsigned char points_second = NO_TRUMP_POINTS.at(card2.GetPower());
+        cout << "NO_TRUMP" << endl;
+        points_first = NO_TRUMP_POINTS.at(card1.GetPower());
+        points_second = NO_TRUMP_POINTS.at(card2.GetPower());
     }
 
     if (points_first > points_second)
@@ -377,11 +377,26 @@ bool Helper::sort_hand(array<Card , HAND_SIZE>& hand)
         Card key = hand.at(i);
         j = i - 1;
 
-        // Move elements of arr[0..i-1], 
-        // that are greater than key, to one
-        // position ahead of their
-        // current position
         while (j >= 0 && compare_cards(hand.at(j), key))
+        {
+            hand.at(j + 1) = hand.at(j);
+            j = j - 1;
+        }
+        hand.at(j + 1) = key;
+    }
+
+    return true;
+}
+
+bool Helper::sort_by_power(vector<Card>& hand, string announce)
+{
+    int i, j;
+    for (i = 1; i < HAND_SIZE; i++)
+    {
+        Card key = hand.at(i);
+        j = i - 1;
+
+        while (j >= 0 && compare_cards_power(hand.at(j), key, announce))
         {
             hand.at(j + 1) = hand.at(j);
             j = j - 1;
