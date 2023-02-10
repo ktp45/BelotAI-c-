@@ -59,12 +59,12 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
         cerr << "NO ANNOUNCE" << endl;
     }
         // any card is bigger than the nullcard
-    if(card1.GetColor() == NULLCARD.GetColor())
+    if(card1.GetColor() == NULLCARD.GetColor() || card1.GetPower() == NULLCARD.GetPower())
     {
         return false;
     }
 
-    if(card2.GetColor() == NULLCARD.GetColor())
+    if(card2.GetColor() == NULLCARD.GetColor()|| card2.GetPower() == NULLCARD.GetPower())
     {           
         return true;
     }
@@ -73,7 +73,6 @@ bool Helper::compare_cards_power(Card card1, Card card2 , string announce)
     unsigned char points_second = ALL_TRUMP_POINTS.at(card2.GetPower()); // all trump by default 
     if (announce == "NO_TRUMP")
     {
-        cout << "NO_TRUMP" << endl;
         points_first = NO_TRUMP_POINTS.at(card1.GetPower());
         points_second = NO_TRUMP_POINTS.at(card2.GetPower());
     }
@@ -390,19 +389,31 @@ bool Helper::sort_hand(array<Card , HAND_SIZE>& hand)
 
 bool Helper::sort_by_power(vector<Card>& hand, string announce)
 {
-    int i, j;
-    for (i = 1; i < HAND_SIZE; i++)
+    try
     {
-        Card key = hand.at(i);
-        j = i - 1;
-
-        while (j >= 0 && compare_cards_power(hand.at(j), key, announce))
+        int j;
+        for (int i = 1; i < HAND_SIZE; i++)
         {
-            hand.at(j + 1) = hand.at(j);
-            j = j - 1;
-        }
-        hand.at(j + 1) = key;
-    }
+            Card key = hand.at(i);
+            j = i - 1;
 
+            while (j >= 0 && compare_cards_power(hand.at(j) , key, announce))
+            {
+                hand.at(j + 1) = hand.at(j);
+                j = j - 1;
+            }
+            hand.at(j + 1) = key;
+        }
+    }
+    catch (const std::out_of_range &e)
+    {
+        for (int i = 0; i < HAND_SIZE; i++)
+        {
+            cout << hand.at(i) << " ";
+        }
+        cout << endl;
+        cerr << "sort_by_power" << endl;
+        throw __throw_out_of_range;
+    }
     return true;
 }

@@ -19,6 +19,7 @@ GamePlayer::GamePlayer(array<Card, HAND_SIZE> hand1, array<Card, HAND_SIZE> hand
     m_ucThreadNumber = threadNumber; 
     m_vSecond_deal_combinations.resize(threadNumber);
     m_vSecond_deals.resize(threadNumber);
+    m_vCardCounters.resize(threadNumber);
 
     m_aCards.at(0) = (hand1);
     m_aCards.at(1) = (hand2);
@@ -59,13 +60,14 @@ GamePlayer::GamePlayer(array<Card, HAND_SIZE> hand1, array<Card, HAND_SIZE> hand
     }
 
     m_helper.InitHelper(colorTrump);
-   
+    
 
     m_vFirst_deals_combinations.resize(EXPECTED_FIRST_DEAL_COMBINATIONS);
     m_vRemaining_cards.resize(EXPECTED_FIRST_DEAL_COMBINATIONS);
 
     for (int i = 0; i < threadNumber; i++)
     {
+        m_vCardCounters.at(i).InitCounter(colorTrump);
         m_vSecond_deal_combinations.at(i).resize(EXPECTED_SECOND_DEAL_COMBINATIONS);
         m_vSecond_deals.at(i) = 0;
     }
@@ -91,12 +93,14 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
     if(playedCardsSize == NUMBER_OF_PLAYERS)
     {
         current_player = m_helper.calculate_winner_of_deal(played_cards, announce);
+
         if(current_player == ERROR)
         {
             cerr << "NO WINNER OF DEAL" << endl; 
         }
         //"""TODO: create 24 bit deal bitarray + save + choose how much CPU"""
-        current_deal.at((turn_id  + 1 ) / 4 - 1) = (played_cards); //turn id is counted from 0
+        current_deal.at((turn_id  + 1) / 4 - 1) = (played_cards); //turn id is counted from 0
+
         played_cards.fill(NULLCARD);
     } 
 
@@ -128,7 +132,25 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
         return_when_all_cards_played();
         return true;
     }
+
     current_player = current_player % 4;
+    if(second_cards != 0 && turn_id < 12)
+    {
+        m_vCardCounters.at(thread_id).UpdateByHands(all_hands, turn_id + (HAND_SIZE - second_cards) * 4, false);
+        if(m_vCardCounters.at(thread_id).IsHandClaimable(all_hands.at(current_player)))
+        {
+            array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
+            array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
+            newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (newHands.at(current_player).at(0));
+
+            newHands.at(current_player).at(0) = NULLCARD;
+            
+            m_helper.sort_hand(newHands.at(current_player)); 
+
+            finishDeal((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1, thread_id, announce);
+            return true;
+        }
+    }
 
     auto posibleOptions = m_helper.playable_by_hand_and_played_cards(announce, all_hands.at(current_player), played_cards);
 
@@ -191,12 +213,80 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
         }
         else
         {
+            
             play_recursive(0, m_vRemaining_cards.at(deal_id), tempPlayedCards, tempCurrentDeal, 
                             first_cards, second_cards, 0, thread_id, current_announce);
             return;
         }
     }
     play_recursive(0, m_aCards, tempPlayedCards, tempCurrentDeal, first_cards, second_cards, 0, 0, current_announce);
+}
+
+bool GamePlayer::finishDeal(unsigned char turn_id, const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards, 
+                            array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_DEALS> current_deal, const unsigned char first_cards, 
+                            const unsigned char second_cards, unsigned char current_player, const unsigned char thread_id,
+                            string announce)
+{
+    unsigned char playedCardsSize = m_helper.count_played_cards(played_cards);
+    if(playedCardsSize == NUMBER_OF_PLAYERS)
+    {
+        current_player = m_helper.calculate_winner_of_deal(played_cards, announce);
+
+        if(current_player == ERROR)
+        {
+            cerr << "NO WINNER OF DEAL" << endl; 
+        }
+        //"""TODO: create 24 bit deal bitarray + save + choose how much CPU"""
+        current_deal.at((turn_id  + 1 ) / 4 - 1) = (played_cards); //turn id is counted from 0
+        played_cards.fill(NULLCARD);
+        
+    } 
+
+    if(first_cards != 0)
+    {
+        if(turn_id == NUMBER_OF_PLAYERS * first_cards)
+        {
+            m_vFirst_deals_combinations.at(m_ui64first_deals) = (current_deal);
+            m_vRemaining_cards.at(m_ui64first_deals) = (all_hands);
+            m_ui64first_deals++;
+
+            return true;
+        }
+    }
+    else if (second_cards != 0)
+    {
+        if(turn_id == NUMBER_OF_PLAYERS * second_cards)
+        {
+            mtx_update_combinations.lock();
+            return_when_all_cards_played();
+            m_vSecond_deal_combinations.at(thread_id).at(m_vSecond_deals.at(thread_id)) = (current_deal);
+            m_vSecond_deals.at(thread_id)++;
+            mtx_update_combinations.unlock();
+            return true;
+        }
+    }
+    else if (turn_id == NUMBER_OF_CARDS)
+    {
+        return_when_all_cards_played();
+        return true;
+    }
+    current_player = current_player % 4;
+
+    auto posibleOptions = m_helper.playable_by_hand_and_played_cards(announce, all_hands.at(current_player), played_cards);
+
+    m_helper.sort_hand((posibleOptions));
+
+    // not needed to play all options since they all lead to the same exit
+    array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
+    newHands.at(current_player).at(m_helper.findCard(newHands.at(current_player), posibleOptions.at(0), HAND_SIZE - turn_id / 4)) = NULLCARD;
+
+    array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
+
+    newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (posibleOptions.at(0));
+    m_helper.sort_hand(newHands.at(current_player)); 
+    finishDeal((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1, thread_id, announce); // play the next card
+
+    return true;
 }
 
 /* separator between methods */

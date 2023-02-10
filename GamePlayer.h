@@ -1,4 +1,4 @@
-#include "Helper.h"
+#include "CardCounter.h"
 #include <chrono>
 using namespace std;
 struct ThreadData
@@ -24,7 +24,10 @@ struct RecursiveData
 class GamePlayer{
 
 unsigned char m_ucThreadNumber;
+
 Helper m_helper;
+
+vector<CardCounter> m_vCardCounters;
 
 uint64_t m_ui64first_deals;
 vector<array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE >> m_vFirst_deals_combinations;
@@ -58,6 +61,11 @@ bool play_recursive(unsigned char turn_id, const array<array<Card, NUMBER_OF_DEA
 bool play_recursive(unsigned char turn_id, const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards,
                     RecursiveData data);
 
+bool finishDeal(unsigned char turn_id, const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards, 
+        array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_DEALS> current_deal, const unsigned char first_cards = 0, 
+        const unsigned char second_cards = 0, unsigned char current_player = 0, const unsigned char thread_id = 0,
+        string announce = "NULL");
+
 /* manager of brute force */
 void play_deals_fast(unsigned char first_cards = 0, unsigned char second_cards = 0, long long deal_id=-1, unsigned char thread_id = 0,
                     string announce = "n/a");
@@ -66,6 +74,8 @@ void play_deals_fast(ThreadData data);
 
 /* separator between methods */
 void play_separated_to_x_then_y(unsigned char cardsNumber);
+
+
 
 long long GetFirstDealsCount();
 
