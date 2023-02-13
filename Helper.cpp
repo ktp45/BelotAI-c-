@@ -26,12 +26,17 @@ bool Helper::compare_cards(Card card1, Card card2)
     return false;
 }
 
-unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned char handSize)
+unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned char handSize, bool sortedHands)
 {
     if(card.GetColor() == HEARTS || card.GetColor() == SPADES)
     {
         for(int i = HAND_SIZE - 1; i >= 0 ; i--)
         {
+            if((hand.at(i).GetColor() < card.GetColor()) && sortedHands)
+            {
+                return ERROR;
+            }
+            
             if(hand.at(i) == card)
             {
                 return i;
@@ -42,6 +47,11 @@ unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned 
     {
         for(int i = 0; i < HAND_SIZE ;i++)
         {
+            if((hand.at(i).GetColor() > card.GetColor()) && sortedHands)
+            {
+                return ERROR;
+            }
+
             if(hand.at(i) == card)
             {
                 return i;

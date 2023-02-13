@@ -9,7 +9,7 @@ class Helper
     Helper();
     bool InitHelper(unsigned char);
 
-    unsigned char findCard(array<Card, NUMBER_OF_DEALS> hand, Card card, unsigned char handSize);
+    unsigned char findCard(array<Card, NUMBER_OF_DEALS> hand, Card card, unsigned char handSize, bool sortedHands = false);
     //clever find
 
     bool compare_cards(Card card1, Card card2);

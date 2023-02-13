@@ -27,7 +27,6 @@ void CardCounter::SortCardsByAnnounce()
         reverse(m_vRemainingCards.at(i).begin(), m_vRemainingCards.at(i).end());
         //the most powerful card should be first for simplicity
     }
-    
 }
 
 bool CardCounter::InitCounter(unsigned char announce)
@@ -212,7 +211,6 @@ vector<Card> CardCounter::GetRemainingbyTrumpCards(const unsigned char& trump)
 
 unsigned char CardCounter::EvaluateHand(const array<Card, HAND_SIZE> &hand)
 {
-
    unsigned char winningCards = 0;
    unsigned char handSize = HAND_SIZE - m_ucPCardsCount / NUMBER_OF_PLAYERS;
 
@@ -220,15 +218,15 @@ unsigned char CardCounter::EvaluateHand(const array<Card, HAND_SIZE> &hand)
    {
         for(unsigned char i = 0; i <= SPADES; i++)
         {
-            unsigned char j = 0 ;
-            while(m_helper.findCard(hand, m_vRemainingCards.at(i).at(j), handSize) != ERROR)
+            unsigned char current_card = 0 ;
+            while(m_helper.findCard(hand, m_vRemainingCards.at(i).at(current_card), handSize, true) != ERROR)
             {
-                if(m_vRemainingCards.at(i).at(j).GetColor() == NULLCARD.GetColor() )
+                if(m_vRemainingCards.at(i).at(current_card).GetColor() == NULLCARD.GetColor() )
                 {
                     break; // don't count nullcards in power
                 }                
                 winningCards++;
-                j++;
+                current_card++;
             }   
             if(winningCards == handSize)
             {
@@ -246,15 +244,15 @@ unsigned char CardCounter::EvaluateHand(const array<Card, HAND_SIZE> &hand)
                 remainingTrump++;
             }
         }
-        unsigned char j = 0 ;
-        while(m_helper.findCard(hand, m_vRemainingCards.at(m_ucAnnounce).at(j), handSize) != ERROR)
+        unsigned char current_card = 0 ;
+        while(m_helper.findCard(hand, m_vRemainingCards.at(m_ucAnnounce).at(current_card), handSize, true) != ERROR)
         {
-            if(m_vRemainingCards.at(m_ucAnnounce).at(j).GetColor() == NULLCARD.GetColor() )
+            if(m_vRemainingCards.at(m_ucAnnounce).at(current_card).GetColor() == NULLCARD.GetColor() )
             {
                 break; // don't count nullcards in power
             }
 
-            j++;
+            current_card++;
             winningCards++;
             if(winningCards == handSize)
             {
@@ -273,17 +271,17 @@ unsigned char CardCounter::EvaluateHand(const array<Card, HAND_SIZE> &hand)
                 {
                     continue;
                 }
-                j = 0;
-                while(m_helper.findCard(hand, m_vRemainingCards.at(i).at(j), handSize) != ERROR)
+                current_card = 0;
+                while(m_helper.findCard(hand, m_vRemainingCards.at(i).at(current_card), handSize, true) != ERROR)
                 {
-                    if(m_vRemainingCards.at(i).at(j).GetColor() == NULLCARD.GetColor() )
+                    if(m_vRemainingCards.at(i).at(current_card).GetColor() == NULLCARD.GetColor() )
                     {
                         break; // don't count nullcards in power
                     }
 
                     winningCards++;
-                    j++;
-                    if(j == HAND_SIZE)
+                    current_card++;
+                    if(current_card == HAND_SIZE)
                     {
                         break; // there are no winning cards
                     }

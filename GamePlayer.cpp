@@ -83,76 +83,75 @@ void GamePlayer::sort_hands()
     } 
 }
 
-/* brute force play combinations */ /*TODO MAKE CLASS*/
-bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards, 
-                            array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE> current_deal, const unsigned char first_cards, 
-                            const unsigned char second_cards, unsigned char current_player, const unsigned char thread_id,
-                            string announce)
+/* brute force play combinations */ 
+bool GamePlayer::play_recursive(const array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS>& all_hands, 
+                               array<Card, NUMBER_OF_PLAYERS>& played_cards, RecursiveData data)
 {
     unsigned char playedCardsSize = m_helper.count_played_cards(played_cards);
     if(playedCardsSize == NUMBER_OF_PLAYERS)
     {
-        current_player = m_helper.calculate_winner_of_deal(played_cards, announce);
+        data.current_player = m_helper.calculate_winner_of_deal(played_cards, data.announce);
 
-        if(current_player == ERROR)
+        if(data.current_player == ERROR)
         {
             cerr << "NO WINNER OF DEAL" << endl; 
         }
         //"""TODO: create 24 bit deal bitarray + save + choose how much CPU"""
-        current_deal.at((turn_id  + 1) / 4 - 1) = (played_cards); //turn id is counted from 0
+        data.current_deal.at((data.turn_id  + 1) / 4 - 1) = (played_cards); //turn id is counted from 0
 
         played_cards.fill(NULLCARD);
     } 
 
-    if(first_cards != 0)
+    if(data.first_cards != 0)
     {
-        if(turn_id == NUMBER_OF_PLAYERS * first_cards)
+        if(data.turn_id == NUMBER_OF_PLAYERS * data.first_cards)
         {
-            m_vFirst_deals_combinations.at(m_ui64first_deals) = (current_deal);
+            m_vFirst_deals_combinations.at(m_ui64first_deals) = (data.current_deal);
             m_vRemaining_cards.at(m_ui64first_deals) = (all_hands);
             m_ui64first_deals++;
 
             return true;
         }
     }
-    else if (second_cards != 0)
+    else if (data.second_cards != 0)
     {
-        if(turn_id == NUMBER_OF_PLAYERS * second_cards)
+        if(data.turn_id == NUMBER_OF_PLAYERS * data.second_cards)
         {
             mtx_update_combinations.lock();
             return_when_all_cards_played();
-            m_vSecond_deal_combinations.at(thread_id).at(m_vSecond_deals.at(thread_id)) = (current_deal);
-            m_vSecond_deals.at(thread_id)++;
+            m_vSecond_deal_combinations.at(data.thread_id).at(m_vSecond_deals.at(data.thread_id)) = (data.current_deal);
+            m_vSecond_deals.at(data.thread_id)++;
             mtx_update_combinations.unlock();
             return true;
         }
     }
-    else if (turn_id == NUMBER_OF_CARDS)
+    else if (data.turn_id == NUMBER_OF_CARDS)
     {
         return_when_all_cards_played();
         return true;
     }
 
-    current_player = current_player % 4;
-    if(second_cards != 0 && turn_id < 12)
+    data.current_player = data.current_player % 4;
+    if(data.second_cards != 0 && data.turn_id < 12)
     {
-        m_vCardCounters.at(thread_id).UpdateByHands(all_hands, turn_id + (HAND_SIZE - second_cards) * 4, false);
-        if(m_vCardCounters.at(thread_id).IsHandClaimable(all_hands.at(current_player)))
+        m_vCardCounters.at(data.thread_id).UpdateByHands(all_hands, data.turn_id + (HAND_SIZE - data.second_cards) * 4, false);
+        if(m_vCardCounters.at(data.thread_id).IsHandClaimable(all_hands.at(data.current_player)))
         {
             array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
             array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
-            newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (newHands.at(current_player).at(0));
+            newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (newHands.at(data.current_player).at(0));
 
-            newHands.at(current_player).at(0) = NULLCARD;
+            newHands.at(data.current_player).at(0) = NULLCARD;
             
-            m_helper.sort_hand(newHands.at(current_player)); 
-
-            finishDeal((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1, thread_id, announce);
+            m_helper.sort_hand(newHands.at(data.current_player)); 
+            data.turn_id++;
+            data.current_player++;
+            finishDeal(newHands, newPlayed_cards, data);
             return true;
         }
     }
 
-    auto posibleOptions = m_helper.playable_by_hand_and_played_cards(announce, all_hands.at(current_player), played_cards);
+    auto posibleOptions = m_helper.playable_by_hand_and_played_cards(data.announce, all_hands.at(data.current_player), played_cards);
 
     unsigned char posibleOptionsCount = m_helper.count_played_cards(posibleOptions);
     m_helper.sort_hand((posibleOptions));
@@ -160,13 +159,18 @@ bool GamePlayer::play_recursive(unsigned char turn_id, const array<array<Card, H
     for (int i = 0; i < posibleOptionsCount; i++ )
     {
         array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
-        newHands.at(current_player).at(m_helper.findCard(newHands.at(current_player), posibleOptions.at(i), HAND_SIZE - turn_id / 4)) = NULLCARD;
+        newHands.at(data.current_player).at(m_helper.findCard(newHands.at(data.current_player), posibleOptions.at(i), HAND_SIZE - data.turn_id / 4, true)) = NULLCARD;
 
         array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
 
         newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (posibleOptions.at(i));
-        m_helper.sort_hand(newHands.at(current_player)); 
-        play_recursive((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1, thread_id, announce); // play the next card
+        m_helper.sort_hand(newHands.at(data.current_player)); 
+
+        data.turn_id++;
+        data.current_player++; 
+        play_recursive(newHands, newPlayed_cards, data); // play the next card
+        data.turn_id--; //avoid copying three times data
+        data.current_player--;
     }
     return true;
 }
@@ -186,6 +190,9 @@ void GamePlayer::play_deals_fast(ThreadData data)
 void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second_cards, long long deal_id, unsigned char thread_id,
                                  string announce)
 {
+    RecursiveData data;
+    data.turn_id = 0;
+
     string current_announce;
     if(announce != "n/a")
     {
@@ -199,6 +206,13 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
 
     array<Card, NUMBER_OF_PLAYERS> tempPlayedCards;
     array<array<Card, NUMBER_OF_PLAYERS>, HAND_SIZE> tempCurrentDeal;
+    data.current_deal = tempCurrentDeal;
+    data.first_cards = first_cards;
+    data.second_cards = second_cards;
+    data.current_player = 0;
+    data.announce = current_announce;
+    data.thread_id = 0;
+
     if(second_cards != 0)
     {
         if(deal_id == -1) //if no deal id
@@ -213,78 +227,78 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
         }
         else
         {
-            
-            play_recursive(0, m_vRemaining_cards.at(deal_id), tempPlayedCards, tempCurrentDeal, 
-                            first_cards, second_cards, 0, thread_id, current_announce);
+            data.thread_id = thread_id;
+            play_recursive(m_vRemaining_cards.at(deal_id), tempPlayedCards, data);
             return;
         }
     }
-    play_recursive(0, m_aCards, tempPlayedCards, tempCurrentDeal, first_cards, second_cards, 0, 0, current_announce);
+    RecursiveData firstCardData;
+    
+    play_recursive(m_aCards, tempPlayedCards, data);
 }
 
-bool GamePlayer::finishDeal(unsigned char turn_id, const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards, 
-                            array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_DEALS> current_deal, const unsigned char first_cards, 
-                            const unsigned char second_cards, unsigned char current_player, const unsigned char thread_id,
-                            string announce)
+bool GamePlayer::finishDeal(const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, 
+                            array<Card, NUMBER_OF_PLAYERS>& played_cards, RecursiveData data)
 {
     unsigned char playedCardsSize = m_helper.count_played_cards(played_cards);
     if(playedCardsSize == NUMBER_OF_PLAYERS)
     {
-        current_player = m_helper.calculate_winner_of_deal(played_cards, announce);
+        data.current_player = m_helper.calculate_winner_of_deal(played_cards, data.announce);
 
-        if(current_player == ERROR)
+        if(data.current_player == ERROR)
         {
             cerr << "NO WINNER OF DEAL" << endl; 
         }
         //"""TODO: create 24 bit deal bitarray + save + choose how much CPU"""
-        current_deal.at((turn_id  + 1 ) / 4 - 1) = (played_cards); //turn id is counted from 0
+        data.current_deal.at((data.turn_id  + 1 ) / 4 - 1) = (played_cards); //turn id is counted from 0
         played_cards.fill(NULLCARD);
         
     } 
 
-    if(first_cards != 0)
+    if(data.first_cards != 0)
     {
-        if(turn_id == NUMBER_OF_PLAYERS * first_cards)
+        if(data.turn_id == NUMBER_OF_PLAYERS * data.first_cards)
         {
-            m_vFirst_deals_combinations.at(m_ui64first_deals) = (current_deal);
+            m_vFirst_deals_combinations.at(m_ui64first_deals) = (data.current_deal);
             m_vRemaining_cards.at(m_ui64first_deals) = (all_hands);
             m_ui64first_deals++;
-
             return true;
         }
     }
-    else if (second_cards != 0)
+    else if (data.second_cards != 0)
     {
-        if(turn_id == NUMBER_OF_PLAYERS * second_cards)
+        if(data.turn_id == NUMBER_OF_PLAYERS * data.second_cards)
         {
             mtx_update_combinations.lock();
             return_when_all_cards_played();
-            m_vSecond_deal_combinations.at(thread_id).at(m_vSecond_deals.at(thread_id)) = (current_deal);
-            m_vSecond_deals.at(thread_id)++;
+            m_vSecond_deal_combinations.at(data.thread_id).at(m_vSecond_deals.at(data.thread_id)) = (data.current_deal);
+            m_vSecond_deals.at(data.thread_id)++;
             mtx_update_combinations.unlock();
             return true;
         }
     }
-    else if (turn_id == NUMBER_OF_CARDS)
+    else if (data.turn_id == NUMBER_OF_CARDS)
     {
         return_when_all_cards_played();
         return true;
     }
-    current_player = current_player % 4;
+    data.current_player = data.current_player % 4;
 
-    auto posibleOptions = m_helper.playable_by_hand_and_played_cards(announce, all_hands.at(current_player), played_cards);
+    auto posibleOptions = m_helper.playable_by_hand_and_played_cards(data.announce, all_hands.at( data.current_player), played_cards);
 
     m_helper.sort_hand((posibleOptions));
 
     // not needed to play all options since they all lead to the same exit
     array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS > newHands = all_hands;
-    newHands.at(current_player).at(m_helper.findCard(newHands.at(current_player), posibleOptions.at(0), HAND_SIZE - turn_id / 4)) = NULLCARD;
+    newHands.at(data.current_player).at(m_helper.findCard(newHands.at(data.current_player), posibleOptions.at(0), HAND_SIZE -  data.turn_id / 4, true)) = NULLCARD;
 
     array<Card, NUMBER_OF_PLAYERS> newPlayed_cards = played_cards;
 
     newPlayed_cards.at(m_helper.count_played_cards(newPlayed_cards)) = (posibleOptions.at(0));
-    m_helper.sort_hand(newHands.at(current_player)); 
-    finishDeal((turn_id + 1), newHands, newPlayed_cards, current_deal, first_cards, second_cards, current_player + 1, thread_id, announce); // play the next card
+    m_helper.sort_hand(newHands.at(data.current_player)); 
+    data.turn_id++;
+    data.current_player++; 
+    finishDeal(newHands, newPlayed_cards, data); // play the next card
 
     return true;
 }
