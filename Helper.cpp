@@ -28,9 +28,14 @@ bool Helper::compare_cards(Card card1, Card card2)
 
 unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned char handSize, bool sortedHands)
 {
+    if(!sortedHands)
+    {
+        handSize = HAND_SIZE;
+    }
+
     if(card.GetColor() == HEARTS || card.GetColor() == SPADES)
     {
-        for(int i = HAND_SIZE - 1; i >= 0 ; i--)
+        for(int i = handSize - 1; i >= 0 ; i--)
         {
             if((hand.at(i).GetColor() < card.GetColor()) && sortedHands)
             {
@@ -45,7 +50,7 @@ unsigned char Helper::findCard(array<Card, HAND_SIZE> hand, Card card, unsigned 
     }
     else
     {
-        for(int i = 0; i < HAND_SIZE ;i++)
+        for(int i = 0; i < handSize ;i++)
         {
             if((hand.at(i).GetColor() > card.GetColor()) && sortedHands)
             {
@@ -425,5 +430,18 @@ bool Helper::sort_by_power(vector<Card>& hand, string announce)
         cerr << "sort_by_power" << endl;
         throw __throw_out_of_range;
     }
+    return true;
+}
+
+bool Helper::isNULLHAND(const array<Card , HAND_SIZE>& hand)
+{
+    for(int i = 0 ; i < HAND_SIZE; i++)
+    {
+        if((hand.at(i).GetColor() != NULLCARD.GetColor()) && (hand.at(i).GetPower() != NULLCARD.GetPower()))
+        {
+            return false;
+        }  
+    }
+
     return true;
 }

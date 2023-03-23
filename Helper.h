@@ -41,4 +41,6 @@ class Helper
     bool sort_hand(array<Card , HAND_SIZE>& hand);
     //sort using insertion sort *Метод на Картоиграча*
     bool sort_by_power(vector<Card>& hand, string announce);
+
+    bool isNULLHAND(const array<Card , HAND_SIZE>& hand);
 };
