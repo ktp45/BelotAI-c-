@@ -30,6 +30,14 @@ HumanPlayer::HumanPlayer(array <Card, HAND_SIZE> hand, const string &announce)
     }
 }
 
+HumanPlayer::HumanPlayer(const HumanPlayer &other)
+{
+    m_aHand = other.m_aHand;
+    m_ucHandSize = other.m_ucHandSize;
+    m_sAnnounce = other.m_sAnnounce;
+    m_helper = other.m_helper;
+}
+
 void HumanPlayer::SetAnnounce(const string &announce)
 {
     m_sAnnounce = announce;

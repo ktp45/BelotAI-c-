@@ -43,7 +43,7 @@ enum CARD_VALUE_TO_BYTES{
 
 const size_t ERROR = 69; 
 const size_t HAND_SIZE = 8;
-const size_t NUMBER_OF_DEALS = 8;
+const size_t NUMBER_OF_TICKS = 8;
 const size_t NUMBER_OF_PLAYERS = 4;
 const size_t NUMBER_OF_CARDS = 32;
 const unsigned char CLUBS_ANNOUNCE = 0;

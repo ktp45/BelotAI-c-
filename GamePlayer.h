@@ -13,7 +13,7 @@ struct ThreadData
 struct RecursiveData
 {
     unsigned char turn_id;
-    array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_DEALS> current_deal;
+    array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_TICKS> current_deal;
     unsigned char first_cards;
     unsigned char second_cards;
     unsigned char current_player;
@@ -54,10 +54,10 @@ GamePlayer(array<Card, HAND_SIZE> hand1, array<Card, HAND_SIZE> hand2, array<Car
 /* simple insertion sort for players cards "Метод на картоиграча" */
 void sort_hands();
 /* brute force play combinations */
-bool play_recursive(const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards,
+bool play_recursive(const array<array<Card, NUMBER_OF_TICKS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards,
                     RecursiveData data);
 /* claim winning hand */
-bool finishDeal(const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards,
+bool finishDeal(const array<array<Card, NUMBER_OF_TICKS>, NUMBER_OF_PLAYERS>& all_hands, array<Card, NUMBER_OF_PLAYERS>& played_cards,
                     RecursiveData data);
 /* manager of brute force */
 void play_deals_fast(unsigned char first_cards = 0, unsigned char second_cards = 0, long long deal_id=-1, unsigned char thread_id = 0,

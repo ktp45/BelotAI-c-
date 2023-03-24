@@ -1,4 +1,4 @@
-#include"Helper.h"
+#include "Analyzer.h"
 using namespace std;
 class HumanPlayer
 {
@@ -12,6 +12,8 @@ class HumanPlayer
     HumanPlayer();
     
     HumanPlayer(array <Card, HAND_SIZE> hand, const string &announce);
+
+    HumanPlayer(const HumanPlayer &other);
 
     void SetAnnounce(const string &announce);
 

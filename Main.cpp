@@ -1,4 +1,4 @@
-#include "GamePlayer.h"
+#include "CurrentDeal.h"
 using namespace std;
 
 int main()
@@ -23,8 +23,12 @@ int main()
         hand4.at(i) = deck.at(HAND_SIZE * 3 + i);
     }
 
-    GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS", 8) ;
-    AI.PrintHands();
-    AI.StartProcessing();
+    // GamePlayer AI(hand1, hand2, hand3, hand4, "CLUBS", 8) ;
+    // AI.PrintHands();
+    // AI.StartProcessing();.
+
+    CurrentDeal deal({hand1, hand2, hand3, hand4}, "CLUBS");
+    deal.Start();
+    cout << "Result is " << deal.GetResult() << endl; 
     return 0;
 }

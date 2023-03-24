@@ -12,6 +12,11 @@ bool Helper::InitHelper(unsigned char color)
     return true;
 }
 
+Helper::Helper(const Helper &other)
+{
+    color_trump = other.color_trump;
+}
+
 /* first compare color than power */
 bool Helper::compare_cards(Card card1, Card card2)
 {
@@ -308,7 +313,7 @@ array <Card, HAND_SIZE> Helper::playable_by_hand_and_played_cards
 
 
 
-unsigned char Helper::calculate_winner_of_deal(const array<Card , NUMBER_OF_PLAYERS>& playedCards,const string& announce)
+unsigned char Helper::calculate_winner_of_tick(const array<Card , NUMBER_OF_PLAYERS>& playedCards,const string& announce)
 {
     Card current_winner = playedCards.at(0);
     if(announce == "TRUMP")
@@ -444,4 +449,9 @@ bool Helper::isNULLHAND(const array<Card , HAND_SIZE>& hand)
     }
 
     return true;
+}
+
+unsigned char Helper::GetColorTrump() const
+{
+    return color_trump;
 }

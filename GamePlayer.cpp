@@ -90,7 +90,7 @@ bool GamePlayer::play_recursive(const array<array<Card, HAND_SIZE>, NUMBER_OF_PL
     unsigned char playedCardsSize = m_helper.count_played_cards(played_cards);
     if(playedCardsSize == NUMBER_OF_PLAYERS)
     {
-        data.current_player = m_helper.calculate_winner_of_deal(played_cards, data.announce);
+        data.current_player = m_helper.calculate_winner_of_tick(played_cards, data.announce);
 
         if(data.current_player == ERROR)
         {
@@ -237,13 +237,13 @@ void GamePlayer::play_deals_fast(unsigned char first_cards, unsigned char second
     play_recursive(m_aCards, tempPlayedCards, data);
 }
 
-bool GamePlayer::finishDeal(const array<array<Card, NUMBER_OF_DEALS>, NUMBER_OF_PLAYERS>& all_hands, 
+bool GamePlayer::finishDeal(const array<array<Card, NUMBER_OF_TICKS>, NUMBER_OF_PLAYERS>& all_hands, 
                             array<Card, NUMBER_OF_PLAYERS>& played_cards, RecursiveData data)
 {
     unsigned char playedCardsSize = m_helper.count_played_cards(played_cards);
     if(playedCardsSize == NUMBER_OF_PLAYERS)
     {
-        data.current_player = m_helper.calculate_winner_of_deal(played_cards, data.announce);
+        data.current_player = m_helper.calculate_winner_of_tick(played_cards, data.announce);
 
         if(data.current_player == ERROR)
         {
