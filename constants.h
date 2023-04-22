@@ -45,13 +45,18 @@ const size_t ERROR = 69;
 const size_t HAND_SIZE = 8;
 const size_t NUMBER_OF_TICKS = 8;
 const size_t NUMBER_OF_PLAYERS = 4;
+const size_t NUMBER_OF_TEAMS = 2;
 const size_t NUMBER_OF_CARDS = 32;
+
 const unsigned char CLUBS_ANNOUNCE = 0;
 const unsigned char DIAMONDS_ANNOUNCE = 1;
 const unsigned char HEARTS_ANNOUNCE = 2;
 const unsigned char SPADES_ANNOUNCE = 3;
 const unsigned char NO_TRUMP_ANNOUNCE = 4;
 const unsigned char ALL_TRUMP_ANNOUNCE = 5;
+
+const unsigned char TERCA_CARDS = 3;
+const unsigned char BELOT_POINTS = 20;
 
 static const Card NULLCARD(ERROR, ERROR);
 static const std::array<Card, HAND_SIZE> NULLHAND{NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD, NULLCARD};
@@ -90,6 +95,42 @@ static const std::vector <unsigned char> NO_TRUMP_POINTS =
     3, // Queen  
     4, // King 
     11  // Ace
+};
+
+static const std::vector <unsigned char> Cards_In_A_Row_Points =
+{
+    0,  //  
+    0, // 
+    20, // Terca
+    50, // Kvarta
+    100, // Kvinta 
+    100, // Kvinta+  
+    100, // Kvinta+  
+    100  // Kvinta+ 
+};
+
+static const std::vector <string> Cards_In_A_Row_Names =
+{
+    "0",
+    "DVE POREDNI",
+    "TERCA",
+    "50 / Kvarta",
+    "100 / Kvinta",
+    "100 / Kvinta",
+    "100 / Kvinta",
+    "100 / Kvinta"
+};
+
+static const std::vector <unsigned char> Same_Cards_Points =
+{
+    0,  // seven 
+    0, // eight
+    150, // nine
+    100, // ten
+    200, // Jack 
+    100, // Queen  
+    100, // King 
+    100  // Ace
 };
 
 

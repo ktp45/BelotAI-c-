@@ -1,3 +1,7 @@
+
+#ifndef Helper_H
+#define Helper_H
+
 #include "constants.h"
 #include <algorithm>
 #include <iterator>
@@ -50,3 +54,5 @@ class Helper
 
     unsigned char GetColorTrump() const;
 };
+
+#endif
