@@ -7,7 +7,7 @@ CurrentDeal::CurrentDeal()
 }
 
 CurrentDeal::CurrentDeal(array< array<Card, NUMBER_OF_TICKS>, NUMBER_OF_PLAYERS> hands, string announce): 
- m_aPlayers{}
+ m_aPlayers{}, m_annTracker(hands, announce)
 { 
     for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
@@ -43,7 +43,21 @@ void CurrentDeal::Start()
     {
         for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
         {
-            m_aCurrent_deal.at(tick_id).at(i) = m_aPlayers.at(i).PlayCard(m_aCurrent_deal.at(tick_id));
+            if(turn_id < ANNOUNCE_TURNS * 4)
+            {
+                if(m_annTracker.IsThereTurnIAnnounce(i))
+                {
+                    m_annTracker.MakeAnnounce(m_aPlayers.at(i).GetHand(), i);
+                }
+            }
+
+            Card playedCard = m_aPlayers.at(i).PlayCard(m_aCurrent_deal.at(tick_id));
+
+            if(m_annTracker.CanYouPlayBelote(m_aPlayers.at(i).GetHand(), m_aCurrent_deal.at(i), playedCard, i))
+            {
+                m_annTracker.PlayBelote(i);
+            }
+            m_aCurrent_deal.at(tick_id).at(i) = playedCard;
             turn_id++;
         }
         tick_id++;
@@ -51,6 +65,9 @@ void CurrentDeal::Start()
 
     Analyzer ResultCalc(m_helper);
     m_fResult = ResultCalc.AnalyzeDeal(m_aCurrent_deal, m_sAnnounce);
+    m_fResult += m_annTracker.GetTeamscores().at(0);
+    m_fResult += static_cast<float>(m_annTracker.GetTeamscores().at(1)) / 1000;
+    cout << m_annTracker.GetTeamscores().at(0) << " " << m_annTracker.GetTeamscores().at(1) << endl;
 }
 
 array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_TICKS> CurrentDeal::GetCurrentDeal()

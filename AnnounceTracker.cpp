@@ -3,14 +3,14 @@ using namespace std;
 
 AnnounceTracker::AnnounceTracker()
 {
-    cerr<<" HumanPlayer Called Default constructor " << endl;
+    cerr<<" AnnounceTracker Called Default constructor " << endl;
 }
 
  // SORTED HAND ONLY
 unsigned char AnnounceTracker::cardInARowChecker(array<Card, HAND_SIZE> hand)
 {
     unsigned char maxCardsInARow = 0;
-    unsigned char cardsInARow = 0;
+    unsigned char cardsInARow = 1;
     for(int j = 1; j < HAND_SIZE; j++)
     {
         if((hand.at(j-1).GetColor() == hand.at(j).GetColor()) && 
@@ -20,13 +20,14 @@ unsigned char AnnounceTracker::cardInARowChecker(array<Card, HAND_SIZE> hand)
         }
         else
         {
-            cardsInARow = 0;
+            cardsInARow = 1;
         }
         if(cardsInARow > maxCardsInARow)
         {
             maxCardsInARow = cardsInARow;
         }
     } 
+    cout << (int)maxCardsInARow << "in row cards" << endl;
     return maxCardsInARow;
 }
 
@@ -50,7 +51,7 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
         {
             if(cardsInARow >= TERCA_CARDS 
                         && 
-            !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() - 1)))
+            !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() + 1)))
             )
             {
                 if(!fillUsedCards)
@@ -69,7 +70,7 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
                     score += Cards_In_A_Row_Points.at(cardsInARow);
                 }
             }
-            cardsInARow = 0;
+            cardsInARow = 1;
         }
     }
     return score; 
@@ -114,7 +115,7 @@ unsigned char AnnounceTracker::sameCardCalculator(array<Card, HAND_SIZE> hand, u
         {
             if(!fillUsedCards)
             {
-                if(UserOutput("Four of a King"))
+                if(UserOutput("Four of a Kind "))
                 {
                     m_pTeamscores.at(player_id % 2) += Cards_In_A_Row_Points.at(i);
                 }
@@ -159,11 +160,11 @@ unsigned char AnnounceTracker::belotCounter(array<Card, HAND_SIZE> hand)
 bool AnnounceTracker::UserOutput(string announce)
 {
     int validnumber; // TODO ADD RETARD VALIDATION
-    cout << "Do you want to say" << announce << "?" <<endl;
-    cout << "Press 0 for no any other number for yes" <<endl;
+    cout << "Do you want to say " << announce << "?" <<endl;
+    cout << "Press 0 for NO any other number for YES" <<endl;
 
     cin >> validnumber;
-    return validnumber !=0;
+    return validnumber != 0;
 
 }
 
@@ -178,15 +179,16 @@ AnnounceTracker::AnnounceTracker(array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS
         {
             m_helper.InitHelper(i);
             m_sAnnounce = "TRUMP";
-            return;
         }
     }
 
     for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         m_helper.sort_hand(hands.at(i));
-        if(sameCardChecker(hands.at(i)) || cardInARowChecker(hands.at(i)) >= TERCA_CARDS)
+        cout << "Player " << i << endl;
+        if(sameCardChecker(hands.at(i)) || (cardInARowChecker(hands.at(i)) >= TERCA_CARDS))
         {
+            cout << "Player " << i << "has announce" <<endl;
             m_aIsThereTurnIAnnouncePerPlayer.at(i) = true; 
         }
         m_aBeloteCountPerPlayer.at(i) = belotCounter(hands.at(i));
@@ -207,7 +209,7 @@ unsigned char AnnounceTracker::GetBeloteCountPerPlayer(unsigned char player_id)
 
 void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char player_id)
 {
-    if(m_sAnnounce == "NO_TRUMP")
+    if(m_sAnnounce == "NO_TRUMP" || !IsThereTurnIAnnounce(player_id))
     {
         return;
     }
@@ -218,14 +220,13 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
         unsigned char scoreSameCards = sameCardCalculator(hand, player_id, true);
         if(!m_bThereIsAnnounceConflict)
         {
-            if(UserOutput("KAPE"))
+            if(UserOutput("KAPE " + to_string(scoreSameCards)))
             {
                 m_pTeamscores.at(player_id % 2) += scoreSameCards;
             }
-            if(UserOutput("Announce from Cards in a row"))
+            if(UserOutput("Announce from Cards in a row " + to_string(scorecardInARow)))
             {
-                m_pTeamscores.at(player_id % 2) += scorecardInARow;
-                
+                m_pTeamscores.at(player_id % 2) += scorecardInARow;                
             }
         }
         else
@@ -243,13 +244,57 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
     }
     else if (cardInARowChecker(hand) >= TERCA_CARDS)
     {
-        cardInARowCalculator(hand, player_id);
+        unsigned char scorecardInARow = cardInARowCalculator(hand, player_id);
+        if(UserOutput("Announce from Cards in a row " + to_string(scorecardInARow)))
+        m_pTeamscores.at(player_id % 2) += scorecardInARow;
     }
     else if (sameCardChecker(hand))
     {
-        sameCardCalculator(hand, player_id);
+        unsigned char scoreSameCards = sameCardCalculator(hand, player_id);
+        if(UserOutput("KAPE " + to_string(scoreSameCards)))
+        m_pTeamscores.at(player_id % 2) += scoreSameCards;
     }
 
+}
+
+bool AnnounceTracker::CanYouPlayBelote(array<Card, HAND_SIZE> hand, array<Card, NUMBER_OF_PLAYERS> playedCards, Card playedCard, unsigned char player_id)
+{
+    if((playedCard.GetPower() == Queen) || (playedCard.GetPower() == King))
+    {
+        if(GetBeloteCountPerPlayer(player_id) > 0)
+        {
+            if(m_sAnnounce == "ALL_TRUMP" || TRUMP_NAMES.at(playedCard.GetColor()) == m_sAnnounce)
+            {
+                bool isThereBoth = false;
+                if(playedCard.GetPower() == Queen)
+                {
+                    for(int i = 0; i < HAND_SIZE; i++)
+                    {
+                        if((hand.at(i).GetPower() == King) && hand.at(i).GetColor() == playedCard.GetColor())
+                        {
+                            isThereBoth = true;
+                        }
+                    } 
+                }
+                else if(playedCard.GetPower() == Queen)
+                {
+                    for(int i = 0; i < HAND_SIZE; i++)
+                    {
+                        if((hand.at(i).GetPower() == King) && hand.at(i).GetColor() == playedCard.GetColor())
+                        {
+                            isThereBoth = true;
+                        }
+                    }                    
+                }
+
+                if(isThereBoth && ((playedCards.at(0).GetColor() == playedCard.GetColor())) || (TRUMP_NAMES.at(playedCard.GetColor()) == m_sAnnounce))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 void AnnounceTracker::PlayBelote(unsigned char player_id)
@@ -258,8 +303,11 @@ void AnnounceTracker::PlayBelote(unsigned char player_id)
     {
         return;
     }
-    m_aBeloteCountPerPlayer.at(player_id)--;
-    m_pTeamscores.at(player_id % 2) += BELOT_POINTS;
+    if(UserOutput("belot"))
+    {
+        m_aBeloteCountPerPlayer.at(player_id)--;
+        m_pTeamscores.at(player_id % 2) += BELOT_POINTS;
+    }
 }
 
 

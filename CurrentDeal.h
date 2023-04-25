@@ -1,9 +1,12 @@
 #include "HumanPlayer.h"
+#include "AnnounceTracker.h"
 using namespace std;
 
 class CurrentDeal
 {
     unsigned char turn_id;
+
+    AnnounceTracker m_annTracker;
 
     Helper m_helper;
 

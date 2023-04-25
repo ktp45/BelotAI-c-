@@ -54,6 +54,7 @@ const unsigned char HEARTS_ANNOUNCE = 2;
 const unsigned char SPADES_ANNOUNCE = 3;
 const unsigned char NO_TRUMP_ANNOUNCE = 4;
 const unsigned char ALL_TRUMP_ANNOUNCE = 5;
+const unsigned char ANNOUNCE_TURNS = 1;
 
 const unsigned char TERCA_CARDS = 3;
 const unsigned char BELOT_POINTS = 20;

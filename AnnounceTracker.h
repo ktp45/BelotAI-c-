@@ -40,6 +40,8 @@ class AnnounceTracker
 
     void MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char player_id);
 
+    bool CanYouPlayBelote(array<Card, HAND_SIZE> hand, array<Card, NUMBER_OF_PLAYERS> playedCards, Card playedCard, unsigned char player_id);
+
     void PlayBelote(unsigned char player_id);
 
     unsigned char GetBeloteCountPerPlayer(unsigned char player_id);

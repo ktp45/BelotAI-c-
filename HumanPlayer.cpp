@@ -75,6 +75,13 @@ Card HumanPlayer::PlayCard(const array<Card, NUMBER_OF_PLAYERS> &played_cards)
     int playeroption;
     cout << "Write your choice" << endl;
     cin >> playeroption;
+
+    while(playeroption >= options.size())
+    {
+        cout << "Wrong choice" << endl;
+        cin >> playeroption;
+    }
+
     m_aHand.at(m_helper.findCard(m_aHand, options.at(playeroption), m_ucHandSize, true)) = NULLCARD;
 
     m_helper.sort_hand(m_aHand);
