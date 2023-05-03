@@ -20,14 +20,13 @@ unsigned char AnnounceTracker::cardInARowChecker(array<Card, HAND_SIZE> hand)
         }
         else
         {
-            cardsInARow = 1;
+            cardsInARow = 0;
         }
         if(cardsInARow > maxCardsInARow)
         {
             maxCardsInARow = cardsInARow;
         }
     } 
-    cout << (int)maxCardsInARow << "in row cards" << endl;
     return maxCardsInARow;
 }
 
@@ -49,28 +48,26 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
         }
         else
         {
-            if(cardsInARow >= TERCA_CARDS 
-                        && 
-            !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() + 1)))
+            cardsInARow = 0;
+        }
+        if(cardsInARow >= TERCA_CARDS 
+                    && 
+                (
+                    (j == (HAND_SIZE - 1))
+                                ||
+                !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() + 1)))
+                ) /* next card is different or it is a last card */
             )
+        {
+            if(fillUsedCards)
             {
-                if(!fillUsedCards)
+                for(int used = j; used > (j - (cardsInARow + 1)); used--)
                 {
-                    if(UserOutput(Cards_In_A_Row_Names.at(cardsInARow)))
-                    {
-                        m_pTeamscores.at(player_id % 2) += Cards_In_A_Row_Points.at(cardsInARow);
-                    }
-                }
-                else
-                {
-                    for(int used = j; used > (j - cardsInARow); used--)
-                    {
-                        m_aUsedCards.at(used) = true;
-                    }
-                    score += Cards_In_A_Row_Points.at(cardsInARow);
+                    m_aUsedCards.at(used) = true;
+                    cout << "used " << used << endl; 
                 }
             }
-            cardsInARow = 1;
+            score += Cards_In_A_Row_Points.at(cardsInARow);
         }
     }
     return score; 
@@ -113,14 +110,7 @@ unsigned char AnnounceTracker::sameCardCalculator(array<Card, HAND_SIZE> hand, u
 
         if(sameCards == NUMBER_OF_PLAYERS)
         {
-            if(!fillUsedCards)
-            {
-                if(UserOutput("Four of a Kind "))
-                {
-                    m_pTeamscores.at(player_id % 2) += Cards_In_A_Row_Points.at(i);
-                }
-            }
-            else
+            if(fillUsedCards)
             {
                 for(int used = 0; used < HAND_SIZE; used++)
                 {
@@ -129,12 +119,14 @@ unsigned char AnnounceTracker::sameCardCalculator(array<Card, HAND_SIZE> hand, u
                         if(m_aUsedCards.at(used))
                         {
                             m_bThereIsAnnounceConflict = true;
+                            cout << "conflict same " << used << endl;
                         }
                         m_aUsedCards.at(used) = true;
+                        cout << "used same " << used << endl; 
                     }
                 }
-                score += Cards_In_A_Row_Points.at(i);
             }
+            score += Cards_In_A_Row_Points.at(i);
         } 
         sameCards = 0;
     }
@@ -185,10 +177,8 @@ AnnounceTracker::AnnounceTracker(array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS
     for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
     {
         m_helper.sort_hand(hands.at(i));
-        cout << "Player " << i << endl;
         if(sameCardChecker(hands.at(i)) || (cardInARowChecker(hands.at(i)) >= TERCA_CARDS))
         {
-            cout << "Player " << i << "has announce" <<endl;
             m_aIsThereTurnIAnnouncePerPlayer.at(i) = true; 
         }
         m_aBeloteCountPerPlayer.at(i) = belotCounter(hands.at(i));
@@ -214,12 +204,17 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
         return;
     }
 
+    unsigned char scorecardInARow = 0;
+    unsigned char scoreSameCards = 0;
+
     if (cardInARowChecker(hand) && sameCardChecker(hand))
     {
-        unsigned char scorecardInARow = cardInARowCalculator(hand, player_id, true);
-        unsigned char scoreSameCards = sameCardCalculator(hand, player_id, true);
-        if(!m_bThereIsAnnounceConflict)
+        scorecardInARow = cardInARowCalculator(hand, player_id, true);
+        scoreSameCards = sameCardCalculator(hand, player_id, true);
+        
+        if(!(m_bThereIsAnnounceConflict && ((scorecardInARow > 0) && (scoreSameCards > 0)))) 
         {
+            /* conflict doesn't need to be resolved if the score from one of them is zero */
             if(UserOutput("KAPE " + to_string(scoreSameCards)))
             {
                 m_pTeamscores.at(player_id % 2) += scoreSameCards;
@@ -231,7 +226,8 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
         }
         else
         {
-            string output = "Four of a Kind equal: " + to_string(scoreSameCards) + " or Announce from Cards in a row: " + to_string(scorecardInARow);
+            string output = "Four of a Kind equal: " + to_string(scoreSameCards) + " or Announce from Cards in a row: " + to_string(scorecardInARow)
+                + "\n YES for Four of a Kind and NO for Announce from Cards in a row";
             if(UserOutput(output))
             {
                 m_pTeamscores.at(player_id % 2) += scoreSameCards;
@@ -244,17 +240,19 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
     }
     else if (cardInARowChecker(hand) >= TERCA_CARDS)
     {
-        unsigned char scorecardInARow = cardInARowCalculator(hand, player_id);
+        scorecardInARow = cardInARowCalculator(hand, player_id);
         if(UserOutput("Announce from Cards in a row " + to_string(scorecardInARow)))
         m_pTeamscores.at(player_id % 2) += scorecardInARow;
     }
     else if (sameCardChecker(hand))
     {
-        unsigned char scoreSameCards = sameCardCalculator(hand, player_id);
+        scoreSameCards = sameCardCalculator(hand, player_id);
         if(UserOutput("KAPE " + to_string(scoreSameCards)))
         m_pTeamscores.at(player_id % 2) += scoreSameCards;
     }
-
+    m_bThereIsAnnounceConflict = false;
+    m_aUsedCards.fill(false);
+    cout << (int)scorecardInARow << " " << (int)scoreSameCards << endl;
 }
 
 bool AnnounceTracker::CanYouPlayBelote(array<Card, HAND_SIZE> hand, array<Card, NUMBER_OF_PLAYERS> playedCards, Card playedCard, unsigned char player_id)

@@ -45,6 +45,11 @@ void CurrentDeal::Start()
         {
             if(turn_id < ANNOUNCE_TURNS * 4)
             {
+                for(int h = 0; h < HAND_SIZE; h++)
+                {
+                    cout << m_aPlayers.at(i).GetHand().at(h) << endl;
+                }
+
                 if(m_annTracker.IsThereTurnIAnnounce(i))
                 {
                     m_annTracker.MakeAnnounce(m_aPlayers.at(i).GetHand(), i);
