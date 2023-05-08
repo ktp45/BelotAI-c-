@@ -15,6 +15,10 @@ class AnnounceTracker
 
     string m_sAnnounce;
 
+    string m_sHightestCardsInRow;
+
+    unsigned char m_ucHightestSameCard;
+
     array<bool, HAND_SIZE> m_aUsedCards;
 
     bool m_bThereIsAnnounceConflict;

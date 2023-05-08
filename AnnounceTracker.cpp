@@ -50,26 +50,37 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
         {
             cardsInARow = 0;
         }
-        if(cardsInARow >= TERCA_CARDS 
+        if((cardsInARow >= TERCA_CARDS )
                     && 
-                (
-                    (j == (HAND_SIZE - 1))
-                                ||
+            (
+                (j == (HAND_SIZE - 1))
+                            ||
                 !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() + 1)))
-                ) /* next card is different or it is a last card */
-            )
+            ) /* next card is different or it is a last card */
+                    &&
+            ((m_sHightestCardsInRow.back() <=  hand.at(j).GetPower()) || (cardsInARow > m_sHightestCardsInRow.size()))
+            ) /* there is no highter announce */
         {
-            if(fillUsedCards)
-            {
-                for(int used = j; used > (j - (cardsInARow + 1)); used--)
+            m_sHightestCardsInRow.erase();
+            for(int used = j; used > (j - (cardsInARow + 1)); used--)
+            {               
+                if(fillUsedCards)
                 {
-                    m_aUsedCards.at(used) = true;
-                    cout << "used " << used << endl; 
+                m_aUsedCards.at(used) = true;
+                cout << "used " << used << endl;
                 }
+                m_sHightestCardsInRow.insert(m_sHightestCardsInRow.begin(), hand.at(used).GetPower());
             }
             score += Cards_In_A_Row_Points.at(cardsInARow);
         }
     }
+    /*
+        for (int i = 0 ; i < m_sHightestCardsInRow.size(); i++)
+        {
+            cout << (int)m_sHightestCardsInRow.at(i) ;
+        }
+        cout << endl; print hightest announce if needed
+    */
     return score; 
 }
 
@@ -163,6 +174,8 @@ bool AnnounceTracker::UserOutput(string announce)
 AnnounceTracker::AnnounceTracker(array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS> hands, string announce)
 {
     m_sAnnounce = announce;
+    m_sHightestCardsInRow = "";
+    m_ucHightestSameCard = 0;
     m_aUsedCards.fill(false);
 
     for (int i = 0; i < TRUMP_NAMES.size(); i++)
@@ -215,7 +228,7 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
         if(!(m_bThereIsAnnounceConflict && ((scorecardInARow > 0) && (scoreSameCards > 0)))) 
         {
             /* conflict doesn't need to be resolved if the score from one of them is zero */
-            if(UserOutput("KAPE " + to_string(scoreSameCards)))
+            if(UserOutput("Four of a Kind: " + to_string(scoreSameCards)))
             {
                 m_pTeamscores.at(player_id % 2) += scoreSameCards;
             }
