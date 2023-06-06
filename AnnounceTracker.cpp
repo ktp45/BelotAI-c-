@@ -56,12 +56,15 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
                 (j == (HAND_SIZE - 1))
                             ||
                 !((hand.at(j+1).GetColor() == hand.at(j).GetColor()) && (hand.at(j+1).GetPower() == (hand.at(j).GetPower() + 1)))
-            ) /* next card is different or it is a last card */
-                    &&
-            ((m_sHightestCardsInRow.back() <=  hand.at(j).GetPower()) || (cardsInARow > m_sHightestCardsInRow.size()))
-            ) /* there is no highter announce */
+            )) /* next card is different or it is a last card */
         {
-            m_sHightestCardsInRow.erase();
+            bool newHightestCards = false;
+            if(((m_aHightestCardsInRow.at(player_id)).back() <=  hand.at(j).GetPower()) || (cardsInARow > m_aHightestCardsInRow.at(player_id).size()))
+            {   /* there is no highter announce */
+                m_aHightestCardsInRow.at(player_id).erase();
+                newHightestCards = true;
+            }
+            
             for(int used = j; used > (j - (cardsInARow + 1)); used--)
             {               
                 if(fillUsedCards)
@@ -69,15 +72,18 @@ unsigned char AnnounceTracker::cardInARowCalculator(array<Card, HAND_SIZE> hand,
                 m_aUsedCards.at(used) = true;
                 cout << "used " << used << endl;
                 }
-                m_sHightestCardsInRow.insert(m_sHightestCardsInRow.begin(), hand.at(used).GetPower());
+                if(newHightestCards)
+                {
+                    m_aHightestCardsInRow.at(player_id).insert(m_aHightestCardsInRow.at(player_id).begin(), hand.at(used).GetPower());
+                }
             }
             score += Cards_In_A_Row_Points.at(cardsInARow);
         }
     }
     /*
-        for (int i = 0 ; i < m_sHightestCardsInRow.size(); i++)
+        for (int i = 0 ; i < m_aHightestCardsInRow.at(player_id)).size(); i++)
         {
-            cout << (int)m_sHightestCardsInRow.at(i) ;
+            cout << (int)m_aHightestCardsInRow.at(player_id)).at(i) ;
         }
         cout << endl; print hightest announce if needed
     */
@@ -137,7 +143,8 @@ unsigned char AnnounceTracker::sameCardCalculator(array<Card, HAND_SIZE> hand, u
                     }
                 }
             }
-            score += Cards_In_A_Row_Points.at(i);
+            score += Same_Cards_Points.at(i);
+            m_aHightestSameCard.at(player_id) = i; /* if there are two four of a kinds the second will be always bigger */
         } 
         sameCards = 0;
     }
@@ -174,8 +181,8 @@ bool AnnounceTracker::UserOutput(string announce)
 AnnounceTracker::AnnounceTracker(array<array<Card, HAND_SIZE>, NUMBER_OF_PLAYERS> hands, string announce)
 {
     m_sAnnounce = announce;
-    m_sHightestCardsInRow = "";
-    m_ucHightestSameCard = 0;
+    m_aHightestCardsInRow.fill("");
+    m_aHightestSameCard.fill(0);
     m_aUsedCards.fill(false);
 
     for (int i = 0; i < TRUMP_NAMES.size(); i++)
@@ -234,7 +241,7 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
             }
             if(UserOutput("Announce from Cards in a row " + to_string(scorecardInARow)))
             {
-                m_pTeamscores.at(player_id % 2) += scorecardInARow;                
+                m_pTeamscores.at(player_id % 2) += scorecardInARow;              
             }
         }
         else
@@ -244,10 +251,12 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
             if(UserOutput(output))
             {
                 m_pTeamscores.at(player_id % 2) += scoreSameCards;
+                m_aHightestCardsInRow.at(player_id % 2) = ""; /* reset hightest card */
             }
             else
             {
                 m_pTeamscores.at(player_id % 2) += scorecardInARow;
+                m_aHightestSameCard.at(player_id % 2) = 0; /* reset hightest card */
             }
         }
     }
@@ -266,6 +275,76 @@ void AnnounceTracker::MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char pl
     m_bThereIsAnnounceConflict = false;
     m_aUsedCards.fill(false);
     cout << (int)scorecardInARow << " " << (int)scoreSameCards << endl;
+}
+
+void AnnounceTracker::EvaluateAnnounces()
+{
+    unsigned char equal = 2;
+    unsigned char teamWithHighterInRowAnnounce = 0; /* 0 = Team 0 1 = Team 1 2 = equal */
+    unsigned char teamWithHighterSameCardAnnounce = 0;
+    string currentHightestInRowAnnounce = "";
+    unsigned char currentHightestSameCard = 0;
+    
+    for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
+    {
+        if((m_aHightestCardsInRow.at(i).size() > currentHightestInRowAnnounce.size()) && (m_aHightestCardsInRow.at(i).back() > currentHightestInRowAnnounce.back()))
+        {
+            currentHightestInRowAnnounce = m_aHightestCardsInRow.at(i);
+            teamWithHighterInRowAnnounce = i % 2;
+        }
+        else if ((m_aHightestCardsInRow.at(i).size() == currentHightestInRowAnnounce.size()) && 
+                    (m_aHightestCardsInRow.at(i).back() == currentHightestInRowAnnounce.back()))
+        {
+            teamWithHighterInRowAnnounce = equal;
+        }
+
+        if(m_aHightestSameCard.at(i) > currentHightestSameCard)
+        {
+            currentHightestSameCard = m_aHightestSameCard.at(i);
+            teamWithHighterSameCardAnnounce = i % 2;
+        }
+        else if(m_aHightestSameCard.at(i) > currentHightestSameCard)
+        {
+            teamWithHighterSameCardAnnounce = equal;
+        }
+
+        cout << m_aHightestCardsInRow.at(i).size() << endl;
+    }
+
+    cout << (int)teamWithHighterSameCardAnnounce << " " << (int)teamWithHighterInRowAnnounce << endl;
+
+    if(teamWithHighterInRowAnnounce == equal)
+    {
+        for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        {
+            if(m_aHightestCardsInRow.at(i).size() > 0)
+            {
+                m_pTeamscores.at(i % 2) -= Cards_In_A_Row_Points.at(m_aHightestCardsInRow.at(i).size() - 1);
+            }
+        }
+    }
+    else
+    {
+        for(int i = teamWithHighterInRowAnnounce; i < NUMBER_OF_PLAYERS; i+=2)
+        {
+            m_pTeamscores.at(i % 2) -= Cards_In_A_Row_Points.at(m_aHightestCardsInRow.at(i).size() - 1);
+        }    
+    }
+
+    if(teamWithHighterSameCardAnnounce == equal)
+    {
+        for(int i = 0; i < NUMBER_OF_PLAYERS; i++)
+        {
+            m_pTeamscores.at(i % 2) -= Same_Cards_Points.at(m_aHightestSameCard.at(i));
+        }
+    }
+    else
+    {
+        for(int i = teamWithHighterSameCardAnnounce; i < NUMBER_OF_PLAYERS; i+=2)
+        {
+            m_pTeamscores.at(i % 2) -= Same_Cards_Points.at(m_aHightestSameCard.at(i));
+        }    
+    }
 }
 
 bool AnnounceTracker::CanYouPlayBelote(array<Card, HAND_SIZE> hand, array<Card, NUMBER_OF_PLAYERS> playedCards, Card playedCard, unsigned char player_id)

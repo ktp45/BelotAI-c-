@@ -56,6 +56,11 @@ void CurrentDeal::Start()
                 }
             }
 
+            if(turn_id == ANNOUNCE_TURNS * 4)
+            {
+                m_annTracker.EvaluateAnnounces();
+            }
+
             Card playedCard = m_aPlayers.at(i).PlayCard(m_aCurrent_deal.at(tick_id));
 
             if(m_annTracker.CanYouPlayBelote(m_aPlayers.at(i).GetHand(), m_aCurrent_deal.at(i), playedCard, i))

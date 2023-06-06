@@ -15,9 +15,9 @@ class AnnounceTracker
 
     string m_sAnnounce;
 
-    string m_sHightestCardsInRow;
+    array<string, NUMBER_OF_PLAYERS> m_aHightestCardsInRow;
 
-    unsigned char m_ucHightestSameCard;
+    array<unsigned char, NUMBER_OF_PLAYERS> m_aHightestSameCard;
 
     array<bool, HAND_SIZE> m_aUsedCards;
 
@@ -43,6 +43,8 @@ class AnnounceTracker
     bool IsThereTurnIAnnounce(unsigned char player_id);
 
     void MakeAnnounce(array<Card, HAND_SIZE> hand, unsigned char player_id);
+    
+    void EvaluateAnnounces();
 
     bool CanYouPlayBelote(array<Card, HAND_SIZE> hand, array<Card, NUMBER_OF_PLAYERS> playedCards, Card playedCard, unsigned char player_id);
 
