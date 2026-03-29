@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belot AI - Multiplayer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .header {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .header h1 {
+            color: #1a472a;
+            font-size: 1.5em;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .player-badge {
+            background: #1a472a;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .logout-btn {
+            background: #c62828;
+            color: white;
+            padding: 6px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 15px;
+        }
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .game-table {
+            background: #2e7d32;
+            border-radius: 20px;
+            padding: 30px;
+            min-height: 350px;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+        }
+        .table-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .trump-indicator {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+        .played-cards {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .player-position {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        .player-top { top: 15px; left: 50%; transform: translateX(-50%); }
+        .player-right { right: 30px; top: 50%; transform: translateY(-50%); }
+        .player-bottom { bottom: 15px; left: 50%; transform: translateX(-50%); }
+        .player-left { left: 30px; top: 50%; transform: translateY(-50%); }
+        .card-slot {
+            width: 70px;
+            height: 100px;
+            border: 2px dashed rgba(255,255,255,0.4);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+        .card-slot.filled {
+            border: none;
+            background: white;
+        }
+        .card {
+            width: 70px;
+            height: 100px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+        }
+        .card.red { color: #c62828; background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%); }
+        .card.black { color: #1a1a1a; background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); }
+        .card.clubs, .card.spades { border: 2px solid #1a1a1a; }
+        .card.hearts, .card.diamonds { border: 2px solid #c62828; }
+        .card .rank { font-size: 22px; }
+        .card .suit { font-size: 28px; }
+        .hand-area {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .hand-area h3 {
+            color: #1a472a;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .hand-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .turn-indicator {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .turn-indicator.your-turn {
+            background: #e8f5e9;
+            color: #2e7d32;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .start-btn {
+            background: #1a472a;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .start-btn:hover { background: #2d5a3f; }
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .info-panel h3 {
+            color: #1a472a;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #1a472a;
+            padding-bottom: 5px;
+        }
+        .player-list {
+            list-style: none;
+        }
+        .player-list li {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .player-list li.connected {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .player-list li.waiting {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .waiting-message {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>♠️ Belot Multiplayer</h1>
+        <div class="user-info">
+            <span>{{ username }}</span>
+            {% if player_num is not none %}
+            <span class="player-badge">Player {{ player_num + 1 }}</span>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if player_num is none %}
+    <div class="waiting-message">
+        <h2>Waiting for available slot...</h2>
+        <p>The game is full or resetting. Please try again.</p>
+    </div>
+    {% else %}
+    <div class="game-layout">
+        <div class="main-area">
+            {% if not game_state.game_started %}
+            <div class="hand-area" style="text-align: center;">
+                <h3>Click to start the game...</h3>
+                <button class="start-btn" onclick="startGame()">🎮 Start Game</button>
+            </div>
+            {% else %}
+            <div class="turn-indicator" id="turnIndicator">
+                {% if game_state.current_turn == player_num %}
+                <span class="your-turn">🎯 Your turn! Select a card to play</span>
+                {% else %}
+                Waiting for Player {{ game_state.current_turn + 1 }}...
+                {% endif %}
+            </div>
+
+            <div class="game-table">
+                <div class="player-position player-top">
+                    Player 3<br>
+                    {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                </div>
+                <div class="player-position player-right">
+                    Player 2<br>
+                    {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                </div>
+                <div class="player-position player-bottom">
+                    Player 1<br>
+                    {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                </div>
+                <div class="player-position player-left">
+                    Player 4<br>
+                    {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                </div>
+
+                <div class="table-center">
+                    <div class="trump-indicator">
+                        Trump: {{ trump_symbol }}
+                    </div>
+                    <div class="played-cards" id="playedCards">
+                        {% for i in range(4) %}
+                        <div class="card-slot" id="slot{{ i }}">P{{ i + 1 }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="hand-area">
+                <h3>♠️ Your Hand ({{ hand|length }} cards)</h3>
+                <div class="hand-cards" id="handCards">
+                    {% for card in hand %}
+                    <div class="card {{ 'red' if card.suit in ['HEARTS', 'DIAMONDS'] else 'black' }}" onclick="playCard({{ loop.index0 }})">
+                        <span class="rank">{{ card.rank }}</span>
+                        <span class="suit">{{ card.symbol }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="sidebar">
+            <div class="info-panel">
+                <h3>👥 Players</h3>
+                <ul class="player-list">
+                    <li class="connected">Player 1: player1</li>
+                    <li class="connected">Player 2: player2</li>
+                    <li class="connected">Player 3: player3</li>
+                    <li class="connected">Player 4: player4</li>
+                </ul>
+            </div>
+
+            <div class="info-panel">
+                <h3>📋 Rules</h3>
+                <ul style="font-size: 13px; color: #666; padding-left: 20px;">
+                    <li>4 players, 8 cards each</li>
+                    <li>Play in turn order</li>
+                    <li>Highest trump wins</li>
+                    <li>No trump = highest rank wins</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        let lastUpdate = Date.now();
+
+        function startGame() {
+            fetch('/start_game', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) alert(data.error);
+                    else location.reload();
+                });
+        }
+
+        function playCard(index) {
+            fetch('/play_card', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ card_index: index })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    updateGameState();
+                }
+            });
+        }
+
+        function updateGameState() {
+            fetch('/game_status')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) return;
+
+                    // Update turn indicator
+                    const indicator = document.getElementById('turnIndicator');
+                    if (data.current_turn === {{ player_num }}) {
+                        indicator.innerHTML = '<span class="your-turn">🎯 Your turn! Select a card to play</span>';
+                    } else {
+                        indicator.innerHTML = 'Waiting for Player ' + (data.current_turn + 1) + '...';
+                    }
+
+                    // Update played cards
+                    data.played_cards.forEach((item, idx) => {
+                        const slot = document.getElementById('slot' + item.player);
+                        if (slot) {
+                            slot.className = 'card-slot filled ' + (item.card.suit === 'HEARTS' || item.card.suit === 'DIAMONDS' ? 'red' : 'black');
+                            slot.innerHTML = '<span>' + item.card.rank + '</span><span>' + item.card.symbol + '</span>';
+                        }
+                    });
+
+                    // Update hand
+                    if (data.hand) {
+                        const handContainer = document.getElementById('handCards');
+                        handContainer.innerHTML = data.hand.map((card, idx) =>
+                            '<div class="card ' + (card.suit === 'HEARTS' || card.suit === 'DIAMONDS' ? 'red' : 'black') + '" onclick="playCard(' + idx + ')">' +
+                            '<span class="rank">' + card.rank + '</span>' +
+                            '<span class="suit">' + card.symbol + '</span></div>'
+                        ).join('');
+                    }
+
+                    // Auto-refresh every second
+                    setTimeout(updateGameState, 1000);
+                });
+        }
+
+        // Start polling if game is active
+        {% if game_state.game_started %}
+        updateGameState();
+        {% endif %}
+    </script>
+</body>
+</html>
