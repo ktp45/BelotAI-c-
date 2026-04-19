@@ -17,18 +17,20 @@
             padding: 15px;
         }
         .header {
-            background: white;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
             padding: 12px 20px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #4a7c59;
         }
         .header h1 {
-            color: #1a472a;
+            color: #c8e6c9;
             font-size: 1.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         .user-info {
             display: flex;
@@ -36,12 +38,13 @@
             gap: 15px;
         }
         .player-badge {
-            background: #1a472a;
+            background: #4a7c59;
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
+            border: 1px solid #81c784;
         }
         .logout-btn {
             background: #c62828;
@@ -54,12 +57,13 @@
             text-decoration: none;
         }
         .error {
-            background: #ffebee;
-            color: #c62828;
+            background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+            color: #fff;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
             text-align: center;
+            border: 2px solid #ef5350;
         }
         .game-layout {
             display: grid;
@@ -112,17 +116,22 @@
         .card-slot {
             width: 70px;
             height: 100px;
-            border: 2px dashed rgba(255,255,255,0.4);
+            border: 2px dashed #ffc107;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: rgba(255,255,255,0.4);
-            font-size: 12px;
+            color: #ffc107;
+            font-size: 14px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.4);
         }
         .card-slot.filled {
             border: none;
-            background: white;
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+        }
+        .card-slot.filled span {
+            color: #212121 !important;
         }
         .card {
             width: 70px;
@@ -137,25 +146,28 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 3px solid #ffc107;
         }
         .card:hover {
             transform: translateY(-10px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.4);
         }
-        .card.red { color: #c62828; background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%); }
-        .card.black { color: #1a1a1a; background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); }
-        .card.clubs, .card.spades { border: 2px solid #1a1a1a; }
-        .card.hearts, .card.diamonds { border: 2px solid #c62828; }
+        .card.red { color: #d32f2f; background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%) !important; border: 3px solid #b71c1c; }
+        .card.black { color: #212121; background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%) !important; border: 3px solid #424242; }
+        .card.clubs, .card.spades { border: 3px solid #212121; }
+        .card.hearts, .card.diamonds { border: 3px solid #b71c1c; }
         .card .rank { font-size: 22px; }
         .card .suit { font-size: 28px; }
         .hand-area {
-            background: white;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #4a7c59;
         }
         .hand-area h3 {
-            color: #1a472a;
+            color: #c8e6c9;
             margin-bottom: 15px;
             font-size: 16px;
         }
@@ -166,24 +178,26 @@
             justify-content: center;
         }
         .turn-indicator {
-            background: #fff3e0;
-            color: #e65100;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
+            color: #c8e6c9;
             padding: 12px;
             border-radius: 8px;
             text-align: center;
             font-weight: 600;
+            border: 2px solid #4a7c59;
         }
         .turn-indicator.your-turn {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+            color: #fff;
             animation: pulse 1s infinite;
+            border: 2px solid #81c784;
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
         .start-btn {
-            background: #1a472a;
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
             color: white;
             padding: 12px 30px;
             border: none;
@@ -191,24 +205,26 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .start-btn:hover { background: #2d5a3f; }
+        .start-btn:hover { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
         .sidebar {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
         .info-panel {
-            background: white;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
             border-radius: 15px;
             padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #4a7c59;
         }
         .info-panel h3 {
-            color: #1a472a;
+            color: #c8e6c9;
             font-size: 14px;
             margin-bottom: 10px;
-            border-bottom: 2px solid #1a472a;
+            border-bottom: 2px solid #4a7c59;
             padding-bottom: 5px;
         }
         .player-list {
@@ -220,20 +236,47 @@
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
+            color: #c8e6c9;
+            background: rgba(0,0,0,0.2);
         }
         .player-list li.connected {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: rgba(76, 175, 80, 0.3);
+            color: #a5d6a7;
         }
         .player-list li.waiting {
-            background: #fff3e0;
-            color: #e65100;
+            background: rgba(255, 152, 0, 0.3);
+            color: #ffcc80;
         }
         .waiting-message {
             text-align: center;
-            color: #666;
+            color: #c8e6c9;
             font-size: 14px;
             padding: 20px;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
+            border-radius: 15px;
+            border: 2px solid #4a7c59;
+        }
+        .announce-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin: 2px;
+        }
+        .announce-badge.belote {
+            background: #e91e63;
+        }
+        .announce-badge.terca {
+            background: #9c27b0;
+        }
+        .announce-badge.kape {
+            background: #3f51b5;
+        }
+        .player-announces {
+            min-height: 24px;
         }
     </style>
 </head>
@@ -276,21 +319,25 @@
             </div>
 
             <div class="game-table">
-                <div class="player-position player-top">
+                <div class="player-position player-top" id="player2">
                     Player 3<br>
                     {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                    <div class="player-announces" id="announce2"></div>
                 </div>
-                <div class="player-position player-right">
+                <div class="player-position player-right" id="player1">
                     Player 2<br>
                     {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                    <div class="player-announces" id="announce1"></div>
                 </div>
-                <div class="player-position player-bottom">
+                <div class="player-position player-bottom" id="player0">
                     Player 1<br>
                     {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                    <div class="player-announces" id="announceSouth"></div>
                 </div>
-                <div class="player-position player-left">
+                <div class="player-position player-left" id="player3">
                     Player 4<br>
                     {% if game_state.game_started %}✅ Playing{% else %}✅ Ready{% endif %}
+                    <div class="player-announces" id="announce3"></div>
                 </div>
 
                 <div class="table-center">
@@ -298,9 +345,10 @@
                         Trump: {{ trump_symbol }}
                     </div>
                     <div class="played-cards" id="playedCards">
-                        {% for i in range(4) %}
-                        <div class="card-slot" id="slot{{ i }}">P{{ i + 1 }}</div>
-                        {% endfor %}
+                        <div class="card-slot" id="slot0">1</div>
+                        <div class="card-slot" id="slot1">2</div>
+                        <div class="card-slot" id="slot2">3</div>
+                        <div class="card-slot" id="slot3">4</div>
                     </div>
                 </div>
             </div>
@@ -332,7 +380,7 @@
 
             <div class="info-panel">
                 <h3>📋 Rules</h3>
-                <ul style="font-size: 13px; color: #666; padding-left: 20px;">
+                <ul style="font-size: 13px; color: #c8e6c9; padding-left: 20px;">
                     <li>4 players, 8 cards each</li>
                     <li>Play in turn order</li>
                     <li>Highest trump wins</li>
@@ -385,8 +433,21 @@
                         indicator.innerHTML = 'Waiting for Player ' + (data.current_turn + 1) + '...';
                     }
 
-                    // Update played cards
-                    data.played_cards.forEach((item, idx) => {
+                    // Clear played card slots at start of new round
+                    if (data.new_round) {
+                        for (let i = 0; i < 4; i++) {
+                            const slot = document.getElementById('slot' + i);
+                            if (slot) {
+                                slot.className = 'card-slot';
+                                slot.innerHTML = (i + 1).toString();
+                            }
+                        }
+                    }
+
+                    // Update played cards - show last_round_cards if available, otherwise current played_cards
+                    const cardsToShow = data.last_round_cards && data.last_round_cards.length > 0 ? data.last_round_cards : data.played_cards;
+                    // Map player numbers to absolute slot positions (player 0 -> slot0, player 1 -> slot1, etc.)
+                    cardsToShow.forEach((item, idx) => {
                         const slot = document.getElementById('slot' + item.player);
                         if (slot) {
                             slot.className = 'card-slot filled ' + (item.card.suit === 'HEARTS' || item.card.suit === 'DIAMONDS' ? 'red' : 'black');
@@ -394,14 +455,48 @@
                         }
                     });
 
-                    // Update hand
+                    // Show belote alert if possible
+                    if (data.belote_possible) {
+                        alert('You can announce BELOTE! Play your Q♠ K♠ combination.');
+                    }
+
+                    // Show final scores if game is over
+                    if (data.final_scores) {
+                        alert('Game Over!\nTeam 1 (Players 1&3): ' + data.final_scores.team0 + '\nTeam 2 (Players 2&4): ' + data.final_scores.team1);
+                    }
+
+                    // Update hand with possible options
                     if (data.hand) {
                         const handContainer = document.getElementById('handCards');
-                        handContainer.innerHTML = data.hand.map((card, idx) =>
-                            '<div class="card ' + (card.suit === 'HEARTS' || card.suit === 'DIAMONDS' ? 'red' : 'black') + '" onclick="playCard(' + idx + ')">' +
-                            '<span class="rank">' + card.rank + '</span>' +
-                            '<span class="suit">' + card.symbol + '</span></div>'
-                        ).join('');
+                        const possible = data.possible_options || [];
+                        const isMyTurn = data.current_turn === {{ player_num }};
+
+                        // Get recently played cards to show with border
+                        const recentlyPlayed = data.played_cards || [];
+
+                        handContainer.innerHTML = data.hand.map((card, idx) => {
+                            // Check if this card is valid to play
+                            let isPlayable = true;
+                            if (isMyTurn && possible.length > 0) {
+                                isPlayable = possible.some(p => p.rank === card.rank && p.suit === card.suit);
+                            }
+
+                            const wasJustPlayed = recentlyPlayed.some(p => p && p.card && p.card.rank === card.rank && p.card.suit === card.suit);
+
+                            let style = '';
+                            if (wasJustPlayed) {
+                                style = 'border: 4px solid #ff9800; opacity: 1;';
+                            } else if (!isPlayable) {
+                                style = 'opacity: 0.4; cursor: not-allowed;';
+                            }
+                            const onclick = isPlayable ? 'onclick="playCard(' + idx + ')"' : '';
+                            const title = isPlayable ? '' : 'title="Must follow suit"';
+
+                            return '<div class="card ' + (card.suit === 'HEARTS' || card.suit === 'DIAMONDS' ? 'red' : 'black') + '" ' +
+                                'style="' + style + '" ' + onclick + ' ' + title + '>' +
+                                '<span class="rank">' + card.rank + '</span>' +
+                                '<span class="suit">' + card.symbol + '</span></div>';
+                        }).join('');
                     }
 
                     // Auto-refresh every second

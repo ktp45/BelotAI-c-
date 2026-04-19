@@ -129,12 +129,26 @@ h1/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/build
 .PHONY : h1/fast
 
+#=============================================================================
+# Target rules for targets named GameCLI
+
+# Build rule for target.
+GameCLI: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 GameCLI
+.PHONY : GameCLI
+
+# fast build rule for target.
+GameCLI/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/build
+.PHONY : GameCLI/fast
+
 Analyzer.o: Analyzer.cpp.o
 .PHONY : Analyzer.o
 
 # target to build an object file
 Analyzer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Analyzer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Analyzer.cpp.o
 .PHONY : Analyzer.cpp.o
 
 Analyzer.i: Analyzer.cpp.i
@@ -143,6 +157,7 @@ Analyzer.i: Analyzer.cpp.i
 # target to preprocess a source file
 Analyzer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Analyzer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Analyzer.cpp.i
 .PHONY : Analyzer.cpp.i
 
 Analyzer.s: Analyzer.cpp.s
@@ -151,6 +166,7 @@ Analyzer.s: Analyzer.cpp.s
 # target to generate assembly for a file
 Analyzer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Analyzer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Analyzer.cpp.s
 .PHONY : Analyzer.cpp.s
 
 AnnounceTracker.o: AnnounceTracker.cpp.o
@@ -159,6 +175,7 @@ AnnounceTracker.o: AnnounceTracker.cpp.o
 # target to build an object file
 AnnounceTracker.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/AnnounceTracker.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/AnnounceTracker.cpp.o
 .PHONY : AnnounceTracker.cpp.o
 
 AnnounceTracker.i: AnnounceTracker.cpp.i
@@ -167,6 +184,7 @@ AnnounceTracker.i: AnnounceTracker.cpp.i
 # target to preprocess a source file
 AnnounceTracker.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/AnnounceTracker.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/AnnounceTracker.cpp.i
 .PHONY : AnnounceTracker.cpp.i
 
 AnnounceTracker.s: AnnounceTracker.cpp.s
@@ -175,6 +193,7 @@ AnnounceTracker.s: AnnounceTracker.cpp.s
 # target to generate assembly for a file
 AnnounceTracker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/AnnounceTracker.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/AnnounceTracker.cpp.s
 .PHONY : AnnounceTracker.cpp.s
 
 Card.o: Card.cpp.o
@@ -183,6 +202,7 @@ Card.o: Card.cpp.o
 # target to build an object file
 Card.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Card.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Card.cpp.o
 .PHONY : Card.cpp.o
 
 Card.i: Card.cpp.i
@@ -191,6 +211,7 @@ Card.i: Card.cpp.i
 # target to preprocess a source file
 Card.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Card.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Card.cpp.i
 .PHONY : Card.cpp.i
 
 Card.s: Card.cpp.s
@@ -199,6 +220,7 @@ Card.s: Card.cpp.s
 # target to generate assembly for a file
 Card.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Card.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Card.cpp.s
 .PHONY : Card.cpp.s
 
 CardCounter.o: CardCounter.cpp.o
@@ -249,6 +271,33 @@ CurrentDeal.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/CurrentDeal.cpp.s
 .PHONY : CurrentDeal.cpp.s
 
+GameCLI.o: GameCLI.cpp.o
+.PHONY : GameCLI.o
+
+# target to build an object file
+GameCLI.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/GameCLI.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/GameCLI.cpp.o
+.PHONY : GameCLI.cpp.o
+
+GameCLI.i: GameCLI.cpp.i
+.PHONY : GameCLI.i
+
+# target to preprocess a source file
+GameCLI.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/GameCLI.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/GameCLI.cpp.i
+.PHONY : GameCLI.cpp.i
+
+GameCLI.s: GameCLI.cpp.s
+.PHONY : GameCLI.s
+
+# target to generate assembly for a file
+GameCLI.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/GameCLI.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/GameCLI.cpp.s
+.PHONY : GameCLI.cpp.s
+
 GamePlayer.o: GamePlayer.cpp.o
 .PHONY : GamePlayer.o
 
@@ -279,6 +328,7 @@ Helper.o: Helper.cpp.o
 # target to build an object file
 Helper.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Helper.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Helper.cpp.o
 .PHONY : Helper.cpp.o
 
 Helper.i: Helper.cpp.i
@@ -287,6 +337,7 @@ Helper.i: Helper.cpp.i
 # target to preprocess a source file
 Helper.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Helper.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Helper.cpp.i
 .PHONY : Helper.cpp.i
 
 Helper.s: Helper.cpp.s
@@ -295,6 +346,7 @@ Helper.s: Helper.cpp.s
 # target to generate assembly for a file
 Helper.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/Helper.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/Helper.cpp.s
 .PHONY : Helper.cpp.s
 
 HumanPlayer.o: HumanPlayer.cpp.o
@@ -353,6 +405,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... GameCLI"
 	@echo "... h1"
 	@echo "... Analyzer.o"
 	@echo "... Analyzer.i"
@@ -369,6 +422,9 @@ help:
 	@echo "... CurrentDeal.o"
 	@echo "... CurrentDeal.i"
 	@echo "... CurrentDeal.s"
+	@echo "... GameCLI.o"
+	@echo "... GameCLI.i"
+	@echo "... GameCLI.s"
 	@echo "... GamePlayer.o"
 	@echo "... GamePlayer.i"
 	@echo "... GamePlayer.s"

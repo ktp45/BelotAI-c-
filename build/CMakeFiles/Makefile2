@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = /home/ktp4/belotcpp/BelotAI-c-/build
 
 # The main recursive "all" target.
 all: CMakeFiles/h1.dir/all
+all: CMakeFiles/GameCLI.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/h1.dir/clean
+clean: CMakeFiles/GameCLI.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -81,12 +83,12 @@ clean: CMakeFiles/h1.dir/clean
 CMakeFiles/h1.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10 "Built target h1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=7,8,9,10,11,12,13,14,15,16,17 "Built target h1"
 .PHONY : CMakeFiles/h1.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/h1.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles 11
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/h1.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles 0
 .PHONY : CMakeFiles/h1.dir/rule
@@ -99,6 +101,32 @@ h1: CMakeFiles/h1.dir/rule
 CMakeFiles/h1.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/h1.dir/build.make CMakeFiles/h1.dir/clean
 .PHONY : CMakeFiles/h1.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/GameCLI.dir
+
+# All Build rule for target.
+CMakeFiles/GameCLI.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target GameCLI"
+.PHONY : CMakeFiles/GameCLI.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/GameCLI.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/GameCLI.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles 0
+.PHONY : CMakeFiles/GameCLI.dir/rule
+
+# Convenience name for target.
+GameCLI: CMakeFiles/GameCLI.dir/rule
+.PHONY : GameCLI
+
+# clean rule for target.
+CMakeFiles/GameCLI.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GameCLI.dir/build.make CMakeFiles/GameCLI.dir/clean
+.PHONY : CMakeFiles/GameCLI.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

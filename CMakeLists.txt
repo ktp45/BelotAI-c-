@@ -9,3 +9,6 @@ file(GLOB SOURCES "*.cpp")
 
 # Define the executable target
 add_executable(h1 ${SOURCES})
+
+# GameCLI executable for web integration
+add_executable(GameCLI GameCLI.cpp Card.cpp Helper.cpp AnnounceTracker.cpp Analyzer.cpp)

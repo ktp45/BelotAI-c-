@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/h1.dir/CardCounter.cpp.o.d"
   "CMakeFiles/h1.dir/CurrentDeal.cpp.o"
   "CMakeFiles/h1.dir/CurrentDeal.cpp.o.d"
+  "CMakeFiles/h1.dir/GameCLI.cpp.o"
+  "CMakeFiles/h1.dir/GameCLI.cpp.o.d"
   "CMakeFiles/h1.dir/GamePlayer.cpp.o"
   "CMakeFiles/h1.dir/GamePlayer.cpp.o.d"
   "CMakeFiles/h1.dir/Helper.cpp.o"

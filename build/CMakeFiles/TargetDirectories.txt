@@ -1,3 +1,4 @@
 /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles/h1.dir
+/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles/GameCLI.dir
 /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles/edit_cache.dir
 /home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles/rebuild_cache.dir

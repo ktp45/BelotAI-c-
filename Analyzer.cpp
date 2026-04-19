@@ -56,7 +56,7 @@ float Analyzer::AnalyzeDeal(array<array<Card, NUMBER_OF_PLAYERS>, NUMBER_OF_TICK
 
         if (i == NUMBER_OF_TICKS - 1)
         {
-            tickScore += 10; // posledno 10
+            tickScore += 10; // last 10
         }
 
         bool winner = calculate_winner_of_tick(deal.at(i), announce) % 2;

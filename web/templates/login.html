@@ -19,22 +19,24 @@
             align-items: center;
         }
         .login-container {
-            background: white;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
             width: 100%;
             max-width: 400px;
+            border: 2px solid #4a7c59;
         }
         h1 {
             text-align: center;
-            color: #1a472a;
+            color: #c8e6c9;
             margin-bottom: 10px;
             font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         .subtitle {
             text-align: center;
-            color: #666;
+            color: #a5d6a7;
             margin-bottom: 30px;
         }
         .form-group {
@@ -43,33 +45,36 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: #c8e6c9;
             font-weight: 600;
         }
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #ddd;
+            border: 2px solid #4a7c59;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
+            background: rgba(0,0,0,0.2);
+            color: #c8e6c9;
         }
         input[type="text"]:focus, input[type="password"]:focus {
             outline: none;
-            border-color: #1a472a;
+            border-color: #81c784;
         }
         .error {
-            background: #ffebee;
-            color: #c62828;
+            background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+            color: white;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            border: 1px solid #ef5350;
         }
         button {
             width: 100%;
             padding: 14px;
-            background: #1a472a;
+            background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -77,27 +82,29 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         button:hover {
-            background: #2d5a3f;
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
         }
         .demo-accounts {
             margin-top: 25px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #4a7c59;
         }
         .demo-accounts h3 {
             font-size: 14px;
-            color: #666;
+            color: #a5d6a7;
             margin-bottom: 10px;
         }
         .demo-accounts code {
             display: block;
-            background: #f5f5f5;
+            background: rgba(0,0,0,0.3);
             padding: 8px 12px;
             border-radius: 5px;
             margin: 5px 0;
             font-size: 13px;
+            color: #c8e6c9;
         }
     </style>
 </head>

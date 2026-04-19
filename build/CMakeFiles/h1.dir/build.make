@@ -139,10 +139,24 @@ CMakeFiles/h1.dir/CurrentDeal.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/h1.dir/CurrentDeal.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ktp4/belotcpp/BelotAI-c-/CurrentDeal.cpp -o CMakeFiles/h1.dir/CurrentDeal.cpp.s
 
+CMakeFiles/h1.dir/GameCLI.cpp.o: CMakeFiles/h1.dir/flags.make
+CMakeFiles/h1.dir/GameCLI.cpp.o: ../GameCLI.cpp
+CMakeFiles/h1.dir/GameCLI.cpp.o: CMakeFiles/h1.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/h1.dir/GameCLI.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/h1.dir/GameCLI.cpp.o -MF CMakeFiles/h1.dir/GameCLI.cpp.o.d -o CMakeFiles/h1.dir/GameCLI.cpp.o -c /home/ktp4/belotcpp/BelotAI-c-/GameCLI.cpp
+
+CMakeFiles/h1.dir/GameCLI.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/h1.dir/GameCLI.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ktp4/belotcpp/BelotAI-c-/GameCLI.cpp > CMakeFiles/h1.dir/GameCLI.cpp.i
+
+CMakeFiles/h1.dir/GameCLI.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/h1.dir/GameCLI.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ktp4/belotcpp/BelotAI-c-/GameCLI.cpp -o CMakeFiles/h1.dir/GameCLI.cpp.s
+
 CMakeFiles/h1.dir/GamePlayer.cpp.o: CMakeFiles/h1.dir/flags.make
 CMakeFiles/h1.dir/GamePlayer.cpp.o: ../GamePlayer.cpp
 CMakeFiles/h1.dir/GamePlayer.cpp.o: CMakeFiles/h1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/h1.dir/GamePlayer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/h1.dir/GamePlayer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/h1.dir/GamePlayer.cpp.o -MF CMakeFiles/h1.dir/GamePlayer.cpp.o.d -o CMakeFiles/h1.dir/GamePlayer.cpp.o -c /home/ktp4/belotcpp/BelotAI-c-/GamePlayer.cpp
 
 CMakeFiles/h1.dir/GamePlayer.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/h1.dir/GamePlayer.cpp.s: cmake_force
 CMakeFiles/h1.dir/Helper.cpp.o: CMakeFiles/h1.dir/flags.make
 CMakeFiles/h1.dir/Helper.cpp.o: ../Helper.cpp
 CMakeFiles/h1.dir/Helper.cpp.o: CMakeFiles/h1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/h1.dir/Helper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/h1.dir/Helper.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/h1.dir/Helper.cpp.o -MF CMakeFiles/h1.dir/Helper.cpp.o.d -o CMakeFiles/h1.dir/Helper.cpp.o -c /home/ktp4/belotcpp/BelotAI-c-/Helper.cpp
 
 CMakeFiles/h1.dir/Helper.cpp.i: cmake_force
@@ -170,7 +184,7 @@ CMakeFiles/h1.dir/Helper.cpp.s: cmake_force
 CMakeFiles/h1.dir/HumanPlayer.cpp.o: CMakeFiles/h1.dir/flags.make
 CMakeFiles/h1.dir/HumanPlayer.cpp.o: ../HumanPlayer.cpp
 CMakeFiles/h1.dir/HumanPlayer.cpp.o: CMakeFiles/h1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/h1.dir/HumanPlayer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/h1.dir/HumanPlayer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/h1.dir/HumanPlayer.cpp.o -MF CMakeFiles/h1.dir/HumanPlayer.cpp.o.d -o CMakeFiles/h1.dir/HumanPlayer.cpp.o -c /home/ktp4/belotcpp/BelotAI-c-/HumanPlayer.cpp
 
 CMakeFiles/h1.dir/HumanPlayer.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/h1.dir/HumanPlayer.cpp.s: cmake_force
 CMakeFiles/h1.dir/Main.cpp.o: CMakeFiles/h1.dir/flags.make
 CMakeFiles/h1.dir/Main.cpp.o: ../Main.cpp
 CMakeFiles/h1.dir/Main.cpp.o: CMakeFiles/h1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/h1.dir/Main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/h1.dir/Main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/h1.dir/Main.cpp.o -MF CMakeFiles/h1.dir/Main.cpp.o.d -o CMakeFiles/h1.dir/Main.cpp.o -c /home/ktp4/belotcpp/BelotAI-c-/Main.cpp
 
 CMakeFiles/h1.dir/Main.cpp.i: cmake_force
@@ -202,6 +216,7 @@ h1_OBJECTS = \
 "CMakeFiles/h1.dir/Card.cpp.o" \
 "CMakeFiles/h1.dir/CardCounter.cpp.o" \
 "CMakeFiles/h1.dir/CurrentDeal.cpp.o" \
+"CMakeFiles/h1.dir/GameCLI.cpp.o" \
 "CMakeFiles/h1.dir/GamePlayer.cpp.o" \
 "CMakeFiles/h1.dir/Helper.cpp.o" \
 "CMakeFiles/h1.dir/HumanPlayer.cpp.o" \
@@ -215,13 +230,14 @@ h1: CMakeFiles/h1.dir/AnnounceTracker.cpp.o
 h1: CMakeFiles/h1.dir/Card.cpp.o
 h1: CMakeFiles/h1.dir/CardCounter.cpp.o
 h1: CMakeFiles/h1.dir/CurrentDeal.cpp.o
+h1: CMakeFiles/h1.dir/GameCLI.cpp.o
 h1: CMakeFiles/h1.dir/GamePlayer.cpp.o
 h1: CMakeFiles/h1.dir/Helper.cpp.o
 h1: CMakeFiles/h1.dir/HumanPlayer.cpp.o
 h1: CMakeFiles/h1.dir/Main.cpp.o
 h1: CMakeFiles/h1.dir/build.make
 h1: CMakeFiles/h1.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable h1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ktp4/belotcpp/BelotAI-c-/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable h1"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/h1.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
